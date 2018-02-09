@@ -24,7 +24,23 @@ func CheckToken() error {
 		return fmt.Errorf(
 			`This operation requires Engine Yard API authentication.
 
-This should be listed as :token: in /etc/scaley/config.yml`,
+This should be listed as token: in /etc/scaley/config.yml`,
+		)
+	}
+
+	return nil
+}
+
+func ReportingURL() string {
+	return viper.GetString("reporting_url")
+}
+
+func CheckReportingURL() error {
+	if len(ReportingURL()) == 0 {
+		return fmt.Errorf(
+			`You must provide a reporting URL.
+
+This should be listed as reporting_url: in /etc/scaley/config.yml`,
 		)
 	}
 
