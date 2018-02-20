@@ -28,7 +28,7 @@ func (scaler *legion) Upscale() error {
 	}
 
 	if len(failures) > 0 {
-		return fmt.Errorf("Errors occurred while starting these servers, please contact support: %s", strings.Join(failures, ", "))
+		return fmt.Errorf(upFail, strings.Join(failures, ", "))
 	}
 
 	return nil
@@ -45,7 +45,7 @@ func (scaler *legion) Downscale() error {
 	}
 
 	if len(failures) > 0 {
-		return fmt.Errorf("Errors occurred while stopping these servers, please contact support: %s", strings.Join(failures, ", "))
+		return fmt.Errorf(downFail, strings.Join(failures, ", "))
 	}
 
 	return nil

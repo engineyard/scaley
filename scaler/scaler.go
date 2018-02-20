@@ -9,6 +9,11 @@ import (
 	"github.com/engineyard/scaley/common"
 )
 
+const (
+	upFail   = "Errors occurred while starting these servers, please contact support: %s"
+	downFail = "Errors occurred while stopping these servers, please contact support: %s"
+)
+
 type strategy interface {
 	Upscale() error
 	Downscale() error
@@ -26,7 +31,7 @@ type Server interface {
 
 func For(group scalable, api core.Client) strategy {
 	if strings.ToLower(group.ScalingStrategy()) == "single" {
-		return nil // newSingle(g, api)
+		return newSingle(group, api)
 	}
 
 	return newLegion(group, api)
