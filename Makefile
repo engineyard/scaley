@@ -1,5 +1,5 @@
 # This how we want to name the binary output
-BINARY=scaley
+BINARY=sm-808
 
 # These are the values we want to pass for VERSION and BUILD
 # git tag 1.0.1
@@ -9,22 +9,21 @@ BUILD=`date +%FT%T%z`
 PACKAGE="github.com/engineyard/scaley"
 TARGET="builds/${BINARY}-${VERSION}"
 PREFIX="${TARGET}/${BINARY}-${VERSION}"
+TESTFILES=`go list ./... | grep -v /vendor/`
 
 # Setup the -ldflags option for go build here, interpolate the variable values
 LDFLAGS=-ldflags "-w -s \
-				-X ${PACKAGE}/cmd.Version=${VERSION} \
-				-X ${PACKAGE}/cmd.Build=${BUILD} \
 				-extldflags '-static'"
 
 # Build for the current platform
 all: clean build
 
 # Build a new release
-release: distclean distbuild linux
+release: distclean distbuild linux darwin windows freebsd
 
 # Builds the project
 build:
-	go build ${LDFLAGS} -o ${BINARY}
+	go build ${LDFLAGS} -o ${BINARY} ${PACKAGE}
 
 # Builds the project for all possible platforms
 distbuild:
@@ -42,6 +41,24 @@ clean:
 distclean:
 	rm -rf ${TARGET}
 
+test:
+	go test ${TESTFILES} -cover
+
+coverage:
+	go test ${TESTFILES} -coverprofile=coverage.out
+
 linux:
-	CGO_ENABLED=0 GOOS=linux GOARCH=386 go build ${LDFLAGS} -o ${TARGET}/${BINARY}-${VERSION}-linux-386
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build ${LDFLAGS} -o ${TARGET}/${BINARY}-${VERSION}-linux-amd64
+	CGO_ENABLED=0 GOOS=linux GOARCH=386 go build ${LDFLAGS} -o ${TARGET}/${BINARY}-${VERSION}-linux-386 ${PACKAGE}
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build ${LDFLAGS} -o ${TARGET}/${BINARY}-${VERSION}-linux-amd64 ${PACKAGE}
+
+darwin:
+	CGO_ENABLED=0 GOOS=darwin GOARCH=386 go build ${LDFLAGS} -o ${TARGET}/${BINARY}-${VERSION}-darwin-386 ${PACKAGE}
+	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build ${LDFLAGS} -o ${TARGET}/${BINARY}-${VERSION}-darwin-amd64 ${PACKAGE}
+	
+windows:
+	CGO_ENABLED=0 GOOS=windows GOARCH=386 go build ${LDFLAGS} -o ${TARGET}/${BINARY}-${VERSION}-windows-386.exe ${PACKAGE}
+	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build ${LDFLAGS} -o ${TARGET}/${BINARY}-${VERSION}-windows-amd64.exe ${PACKAGE}
+
+freebsd:
+	CGO_ENABLED=0 GOOS=freebsd GOARCH=386 go build ${LDFLAGS} -o ${TARGET}/${BINARY}-${VERSION}-freebsd-386 ${PACKAGE}
+	CGO_ENABLED=0 GOOS=freebsd GOARCH=amd64 go build ${LDFLAGS} -o ${TARGET}/${BINARY}-${VERSION}-freebsd-amd64 ${PACKAGE}
