@@ -10,6 +10,21 @@ import (
 	"github.com/engineyard/scaley/scaler"
 )
 
+func (group *Group) CanScale(direction string) bool {
+	switch direction {
+	case "up":
+		if len(group.candidatesForUpscale()) > 0 {
+			return true
+		}
+	case "down":
+		if len(group.candidatesForDownscale()) > 0 {
+			return true
+		}
+	}
+
+	return false
+}
+
 func Scale(group *Group, api core.Client, direction string) error {
 	if direction == "up" {
 		return upscale(group, api)
@@ -92,13 +107,26 @@ func (g *Group) candidatesForDownscale() []scaler.Server {
 	candidates := make([]scaler.Server, 0)
 
 	for _, s := range g.ScalingServers {
-		if s.Instance.State != "stopped" {
+		if s.Instance.State == "running" {
 			candidates = append(candidates, s)
 		}
 	}
 
 	return candidates
 }
+
+//func (g *Group) unusableServers() []scaler.Server {
+//unusable := make([]scaler.Server, 0)
+
+//for _, s := range g.ScalingServers {
+//state := s.Instance.State
+//if state != "running" && state != "stopped" {
+//unusable = append(unusable, s)
+//}
+//}
+
+//return unusable
+//}
 
 func (g *Group) ScalingStrategy() string {
 	return g.Strategy
