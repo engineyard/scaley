@@ -6,16 +6,16 @@ import (
 	"github.com/engineyard/eycore/core"
 )
 
-type single struct {
+type individual struct {
 	group scalable
 	api   core.Client
 }
 
-func newSingle(group scalable, api core.Client) *single {
-	return &single{group: group, api: api}
+func newIndividual(group scalable, api core.Client) *single {
+	return &individual{group: group, api: api}
 }
 
-func (scaler *single) Upscale() error {
+func (scaler *individual) Upscale() error {
 	candidates := scaler.group.Candidates("up")
 
 	if len(candidates) == 0 {
@@ -31,7 +31,7 @@ func (scaler *single) Upscale() error {
 	return nil
 }
 
-func (scaler *single) Downscale() error {
+func (scaler *individual) Downscale() error {
 	candidates := scaler.group.Candidates("down")
 
 	if len(candidates) == 0 {

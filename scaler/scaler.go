@@ -30,8 +30,8 @@ type Server interface {
 }
 
 func For(group scalable, api core.Client) strategy {
-	if strings.ToLower(group.ScalingStrategy()) == "single" {
-		return newSingle(group, api)
+	if strings.ToLower(group.ScalingStrategy()) == "individual" {
+		return newIndividual(group, api)
 	}
 
 	return newLegion(group, api)
