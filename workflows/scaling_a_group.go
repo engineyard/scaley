@@ -53,7 +53,7 @@ func (workflow *ScalingAGroup) withLocking(currentGroup *group.Group, api core.C
 	// record the current operation
 	group.RecordOp(currentGroup, currentOp)
 
-	// determine the opersation to actually perform
+	// provided that there's both popular demand and scaling capability
 	if lastOp == currentOp && currentGroup.CanScale(currentOp) {
 		// Notify upstream that we're starting a scaling event
 		notifier.Info(currentGroup, fmt.Sprintf("Scaling %s", currentOp))
