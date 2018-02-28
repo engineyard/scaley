@@ -22,3 +22,7 @@ Scaley is meant to be run periodically for each configured group. During each ru
     * If they are the same and the group can scale in that direction, start a Scaling Event to scale the group in the desired direction.
     * If they are the same, but the group cannot scale in that direction, record the most recent Scaling Script result, log the issue, and exit.
     * If they are different, record the most recent Scaling Script result and exit.
+
+# History #
+
+* v0.1.0 - Initial release
