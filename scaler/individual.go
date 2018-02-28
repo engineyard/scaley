@@ -11,7 +11,7 @@ type individual struct {
 	api   core.Client
 }
 
-func newIndividual(group scalable, api core.Client) *single {
+func newIndividual(group scalable, api core.Client) *individual {
 	return &individual{group: group, api: api}
 }
 
