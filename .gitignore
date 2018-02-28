@@ -1,0 +1,7 @@
+*~
+*.swp
+builds/
+vendor/
+scaley
+coverage.out
+.quality
