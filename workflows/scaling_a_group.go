@@ -50,14 +50,11 @@ func (workflow *ScalingAGroup) withLocking(currentGroup *group.Group, api core.C
 	// calculate the current operation
 	currentOp := group.ScalingScriptResult(currentGroup)
 
-	// get the current state of the group
-	currentState := group.CurrentState(currentGroup)
-
 	// record the current operation
 	group.RecordOp(currentGroup, currentOp)
 
-	// determine the opersation to actually perform
-	if lastOp == currentOp && currentOp != currentState {
+	// provided that there's both popular demand and scaling capability
+	if lastOp == currentOp && currentGroup.CanScale(currentOp) {
 		// Notify upstream that we're starting a scaling event
 		notifier.Info(currentGroup, fmt.Sprintf("Scaling %s", currentOp))
 
@@ -79,8 +76,6 @@ func (workflow *ScalingAGroup) withLocking(currentGroup *group.Group, api core.C
 			fmt.Sprintf("Successfully scaled %s", currentOp),
 		)
 
-		// Record the operation that we just performed
-		group.RecordState(currentGroup, currentOp)
 	} else {
 		// If the ops are different, don't scale at all
 		fmt.Println("Not scaling now.")

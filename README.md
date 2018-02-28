@@ -19,6 +19,6 @@ Scaley is meant to be run periodically for each configured group. During each ru
 2. In which direction does the Scaling Script say that we should scale if a Scaling Event happens?
 3. What was the Scaling Script result in the last Scaley run?
 4. Compare those two results
-    * If they are the same and are the opposite of the Group's current state, start a Scaling Event to scale the group in the desired direction.
-    * If they are the same and are the same as the Group's current state, exit.
+    * If they are the same and the group can scale in that direction, start a Scaling Event to scale the group in the desired direction.
+    * If they are the same, but the group cannot scale in that direction, record the most recent Scaling Script result, log the issue, and exit.
     * If they are different, record the most recent Scaling Script result and exit.

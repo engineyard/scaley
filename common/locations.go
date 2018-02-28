@@ -45,7 +45,7 @@ func dataDir() string {
 	return path
 }
 
-func CreateDir(path string) {
+var CreateDir = func(path string) {
 	if !FileExists(path) {
 		err := os.MkdirAll(path, 0644)
 		if err != nil {

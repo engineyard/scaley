@@ -26,6 +26,10 @@
   version = "0.3.4"
 
 [[constraint]]
+  branch = "master"
+  name = "github.com/ess/fakey"
+
+[[constraint]]
   name = "github.com/ess/spawning"
   version = "0.1.1"
 

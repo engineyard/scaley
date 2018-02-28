@@ -1,16 +1,29 @@
 package group
 
 import (
-	"encoding/json"
 	"fmt"
-	"net/url"
-	"strings"
-	"time"
 
 	"github.com/engineyard/eycore/core"
 	"github.com/engineyard/eycore/environments"
-	"github.com/engineyard/eycore/requests"
+
+	"github.com/engineyard/scaley/common"
+	"github.com/engineyard/scaley/scaler"
 )
+
+func (group *Group) CanScale(direction string) bool {
+	switch direction {
+	case "up":
+		if len(group.candidatesForUpscale()) > 0 {
+			return true
+		}
+	case "down":
+		if len(group.candidatesForDownscale()) > 0 {
+			return true
+		}
+	}
+
+	return false
+}
 
 func Scale(group *Group, api core.Client, direction string) error {
 	if direction == "up" {
@@ -21,22 +34,15 @@ func Scale(group *Group, api core.Client, direction string) error {
 }
 
 func upscale(group *Group, api core.Client) error {
-	// 1. Start all scaling servers
-	failures := make([]string, 0)
-
-	for _, server := range group.ScalingServers {
-		err := startServer(server, api)
-		if err != nil {
-			failures = append(failures, server.ID)
-		}
-	}
-
-	if len(failures) > 0 {
-		return fmt.Errorf("Errors occurred while starting these servers, please contact support: %s", strings.Join(failures, ", "))
+	// 1. Scale up with the group's defined strategy (default: legion)
+	err := scaler.For(group, api).Upscale()
+	if err != nil {
+		return err
 	}
 
 	// 2. Run chef on the environment
-	if err := runChef(api, group.Environment); err != nil {
+	err = runChef(api, group.Environment)
+	if err != nil {
 		return fmt.Errorf("A Chef error occurred while upscaling the group. Please contact support.")
 	}
 
@@ -49,7 +55,7 @@ func runChef(api core.Client, environment *environments.Model) error {
 		return err
 	}
 
-	req, err = waitFor(api, req)
+	req, err = common.WaitFor(api, req)
 	if err != nil {
 		return err
 	}
@@ -62,104 +68,66 @@ func runChef(api core.Client, environment *environments.Model) error {
 }
 
 func downscale(group *Group, api core.Client) error {
-	// 1. Stop all of the scaling servers
-	failures := make([]string, 0)
-
-	for _, server := range group.ScalingServers {
-		err := stopServer(server, api)
-		if err != nil {
-			failures = append(failures, server.ID)
-		}
-	}
-
-	if len(failures) > 0 {
-		return fmt.Errorf("Errors occurred while stopping these servers: %s", strings.Join(failures, ", "))
+	// 1. Scale down with the group's defined strategy (default: legion)
+	err := scaler.For(group, api).Downscale()
+	if err != nil {
+		return err
 	}
 
 	// 2. Run chef on the environment
-	if err := runChef(api, group.Environment); err != nil {
+	err = runChef(api, group.Environment)
+	if err != nil {
 		return fmt.Errorf("A Chef error occurred while upscaling the group. Please contact support.")
 	}
 
 	return nil
 }
 
-func startServer(server *Server, api core.Client) error {
-	// Only act on stopped servers
-	if server.Instance.State == "stopped" {
-		req, err := serverReq(api, fmt.Sprintf("/servers/%d/start", server.Instance.ID))
-		if err != nil {
-			return err
-		}
-
-		req, err = waitFor(api, req)
-		if err != nil {
-			return err
-		}
-
-		if !req.Successful {
-			return fmt.Errorf("%s", req.RequestStatus)
-		}
+func (g *Group) Candidates(direction string) []scaler.Server {
+	if direction == "up" {
+		return g.candidatesForUpscale()
 	}
 
-	return nil
+	return g.candidatesForDownscale()
 }
 
-func stopServer(server *Server, api core.Client) error {
-	// Only act on servers that are not stopped
-	if server.Instance.State != "stopped" {
-		req, err := serverReq(api, fmt.Sprintf("/servers/%d/stop", server.Instance.ID))
-		if err != nil {
-			return err
-		}
+func (g *Group) candidatesForUpscale() []scaler.Server {
+	candidates := make([]scaler.Server, 0)
 
-		req, err = waitFor(api, req)
-		if err != nil {
-			return err
+	for _, s := range g.ScalingServers {
+		if s.Instance.State == "stopped" {
+			candidates = append(candidates, s)
 		}
-
-		if !req.Successful {
-			return fmt.Errorf("%s", req.RequestStatus)
-		}
-
 	}
 
-	return nil
+	return candidates
 }
 
-func serverReq(api core.Client, path string) (*requests.Model, error) {
-	params := url.Values{}
+func (g *Group) candidatesForDownscale() []scaler.Server {
+	candidates := make([]scaler.Server, 0)
 
-	data, err := api.Put(path, params, nil)
-	if err != nil {
-		return nil, fmt.Errorf("The request to PUT %s failed", path)
-	}
-
-	wrapper := struct {
-		Request *requests.Model `json:"request,omitempty"`
-	}{nil}
-
-	err = json.Unmarshal(data, &wrapper)
-	if err != nil {
-		return nil, fmt.Errorf("The API returned an invalid response when doing PUT %s", path)
-	}
-
-	return wrapper.Request, nil
-}
-
-func waitFor(api core.Client, req *requests.Model) (*requests.Model, error) {
-	var err error
-
-	ret := req
-
-	for len(ret.FinishedAt) == 0 {
-		time.Sleep(5 * time.Second)
-
-		ret, err = requests.Refresh(api, req)
-		if err != nil {
-			return nil, err
+	for _, s := range g.ScalingServers {
+		if s.Instance.State == "running" {
+			candidates = append(candidates, s)
 		}
 	}
 
-	return ret, nil
+	return candidates
+}
+
+//func (g *Group) unusableServers() []scaler.Server {
+//unusable := make([]scaler.Server, 0)
+
+//for _, s := range g.ScalingServers {
+//state := s.Instance.State
+//if state != "running" && state != "stopped" {
+//unusable = append(unusable, s)
+//}
+//}
+
+//return unusable
+//}
+
+func (g *Group) ScalingStrategy() string {
+	return g.Strategy
 }

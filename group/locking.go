@@ -28,7 +28,7 @@ func LockedProcedure(group *Group, api core.Client, process locked) error {
 	return unlockErr
 }
 
-func lock(group *Group) error {
+var lock = func(group *Group) error {
 	lockfile := lockfile(group)
 
 	if common.FileExists(lockfile) {
@@ -45,7 +45,7 @@ func lock(group *Group) error {
 	return nil
 }
 
-func unlock(group *Group) error {
+var unlock = func(group *Group) error {
 	lockfile := lockfile(group)
 
 	if common.FileExists(lockfile) {

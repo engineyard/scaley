@@ -6,30 +6,26 @@ import (
 
 	"github.com/engineyard/eycore/core"
 	"github.com/engineyard/eycore/environments"
-	"github.com/engineyard/eycore/servers"
 	"gopkg.in/yaml.v2"
 
 	"github.com/engineyard/scaley/common"
 	"github.com/engineyard/scaley/finders"
 )
 
-type Server struct {
-	ID       string `yaml:"id"`
-	Instance *servers.Model
-}
-
 type Group struct {
 	Name             string    `yaml:"name"`
 	PermanentServers []*Server `yaml:"permanent_servers"`
 	ScalingServers   []*Server `yaml:"scaling_servers"`
 	ScalingScript    string    `yaml:"scaling_script"`
+	Strategy         string    `yaml:"strategy"`
 	Environment      *environments.Model
 }
 
 func ByName(api core.Client, name string) (*Group, error) {
 	var err error
 	group := &Group{
-		Name: name,
+		Name:     name,
+		Strategy: "legion",
 	}
 
 	dir := common.GroupConfigs()
