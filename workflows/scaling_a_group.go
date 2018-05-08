@@ -44,27 +44,25 @@ func (workflow *ScalingAGroup) scale(api core.Client, current *users.Model) erro
 }
 
 func (workflow *ScalingAGroup) withLocking(currentGroup *group.Group, api core.Client) error {
-	// recall the last recorded scaling operation
-	lastOp := group.LastOperation(currentGroup)
+	desiredOp := group.ScalingScriptResult(currentGroup)
 
-	// calculate the current operation
-	currentOp := group.ScalingScriptResult(currentGroup)
-
-	// record the current operation
-	group.RecordOp(currentGroup, currentOp)
+	if desiredOp == "noop" {
+		fmt.Sprintf("Not scaling now")
+		return nil
+	}
 
 	// provided that there's both popular demand and scaling capability
-	if lastOp == currentOp && currentGroup.CanScale(currentOp) {
+	if currentGroup.CanScale(desiredOp) {
 		// Notify upstream that we're starting a scaling event
-		notifier.Info(currentGroup, fmt.Sprintf("Scaling %s", currentOp))
+		notifier.Info(currentGroup, fmt.Sprintf("Scaling %s", desiredOp))
 
 		// If the ops are the same, Scale the group in the requested direction
-		err := group.Scale(currentGroup, api, currentOp)
+		err := group.Scale(currentGroup, api, desiredOp)
 		if err != nil {
 			// Notify upstream of the scaling failure
 			notifier.Failure(
 				currentGroup,
-				fmt.Sprintf("Could not be scaled %s - %s", currentOp, err.Error()),
+				fmt.Sprintf("Could not be scaled %s - %s", desiredOp, err.Error()),
 			)
 
 			return err
@@ -73,12 +71,19 @@ func (workflow *ScalingAGroup) withLocking(currentGroup *group.Group, api core.C
 		// Notify upstream of the scaling success
 		notifier.Success(
 			currentGroup,
-			fmt.Sprintf("Successfully scaled %s", currentOp),
+			fmt.Sprintf("Successfully scaled %s", desiredOp),
 		)
 
 	} else {
-		// If the ops are different, don't scale at all
-		fmt.Println("Not scaling now.")
+		// The group can't be scaled in the desired direction
+		if desiredOp == "up" {
+			// If the desired outcome was an upscale event, log that we can't scale
+			// and that the group might need to be bigger
+			notifier.Info(
+				currentGroup,
+				"Cannot be scaled up - Consider adding more servers to the group",
+			)
+		}
 	}
 
 	return nil

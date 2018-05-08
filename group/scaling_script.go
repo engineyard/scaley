@@ -1,15 +1,20 @@
 package group
 
 import (
-	"github.com/ess/spawning"
+	"github.com/engineyard/scaley/basher"
 )
 
-func ScalingScriptResult(group *Group) string {
-	result := spawning.Run(group.ScalingScript)
+type scalingScript struct {
+	group *Group
+}
 
-	if result.Success {
+func ScalingScriptResult(group *Group) string {
+	switch basher.Run(group.ScalingScript) {
+	case 2:
 		return "up"
+	case 1:
+		return "down"
 	}
 
-	return "down"
+	return "noop"
 }
