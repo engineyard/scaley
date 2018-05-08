@@ -1,0 +1,38 @@
+hash: 3f7dd20f65138d2867773a059e7aff5720f472334e614a6a38f7f56ae13db874
+updated: 2017-04-13T12:47:17.253863454-04:00
+imports:
+- name: github.com/ess/mockable
+  version: f2fa9b6a24f488147ec679d71092def35b2da2be
+testImports:
+- name: github.com/onsi/ginkgo
+  version: 462326b1628e124b23f42e87a8f2750e3c4e2d24
+  subpackages:
+  - config
+  - internal/codelocation
+  - internal/containernode
+  - internal/failer
+  - internal/leafnodes
+  - internal/remote
+  - internal/spec
+  - internal/specrunner
+  - internal/suite
+  - internal/testingtproxy
+  - internal/writer
+  - reporters
+  - reporters/stenographer
+  - types
+- name: github.com/onsi/gomega
+  version: a78ae492d53aad5a7a232d0d0462c14c400e3ee7
+  subpackages:
+  - format
+  - internal/assertion
+  - internal/asyncassertion
+  - internal/testingtsupport
+  - matchers
+  - matchers/support/goraph/bipartitegraph
+  - matchers/support/goraph/edge
+  - matchers/support/goraph/node
+  - matchers/support/goraph/util
+  - types
+- name: gopkg.in/jarcoal/httpmock.v1
+  version: abbf1543e32e3d8a74ab639e37d9b097178a6924
