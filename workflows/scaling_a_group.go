@@ -8,7 +8,6 @@ import (
 
 	"github.com/engineyard/scaley/group"
 	"github.com/engineyard/scaley/notifier"
-	"github.com/engineyard/scaley/script"
 	"github.com/engineyard/scaley/util"
 )
 
