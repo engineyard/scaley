@@ -8,8 +8,8 @@ import (
 	"github.com/engineyard/eycore/environments"
 	"gopkg.in/yaml.v2"
 
-	"github.com/engineyard/scaley/common"
-	"github.com/engineyard/scaley/finders"
+	"github.com/engineyard/scaley/pkg/common"
+	"github.com/engineyard/scaley/pkg/finders"
 )
 
 type Group struct {

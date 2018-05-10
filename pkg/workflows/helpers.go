@@ -7,7 +7,7 @@ import (
 	"github.com/engineyard/eycore/core"
 	"github.com/engineyard/eycore/users"
 
-	"github.com/engineyard/scaley/util"
+	"github.com/engineyard/scaley/pkg/util"
 )
 
 type authenticated func(api core.Client, current *users.Model) error

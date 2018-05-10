@@ -4,7 +4,7 @@ import (
 	"math/rand"
 	"testing"
 
-	"github.com/engineyard/scaley/basher"
+	"github.com/engineyard/scaley/pkg/basher"
 )
 
 func TestScalingScriptResult(t *testing.T) {

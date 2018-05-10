@@ -1,7 +1,7 @@
 package group
 
 import (
-	"github.com/engineyard/scaley/basher"
+	"github.com/engineyard/scaley/pkg/basher"
 )
 
 type scalingScript struct {

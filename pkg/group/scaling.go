@@ -6,8 +6,8 @@ import (
 	"github.com/engineyard/eycore/core"
 	"github.com/engineyard/eycore/environments"
 
-	"github.com/engineyard/scaley/common"
-	"github.com/engineyard/scaley/scaler"
+	"github.com/engineyard/scaley/pkg/common"
+	"github.com/engineyard/scaley/pkg/scaler"
 )
 
 func (group *Group) CanScale(direction string) bool {

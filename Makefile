@@ -4,9 +4,9 @@ BINARY=scaley
 # These are the values we want to pass for VERSION and BUILD
 # git tag 1.0.1
 # git commit -am "One more change after the tags"
-VERSION=`./.script/genver`
+VERSION=`./scripts/genver`
 BUILD=`date +%FT%T%z`
-PACKAGE="github.com/engineyard/scaley"
+PACKAGE="github.com/engineyard/scaley/cmd/scaley"
 TARGET="builds/${BINARY}-${VERSION}"
 PREFIX="${TARGET}/${BINARY}-${VERSION}"
 TESTFILES=`go list ./... | grep -v /vendor/`

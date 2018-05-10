@@ -6,7 +6,7 @@ import (
 
 	"github.com/engineyard/eycore/core"
 
-	"github.com/engineyard/scaley/common"
+	"github.com/engineyard/scaley/pkg/common"
 )
 
 type locked func(group *Group, api core.Client) error

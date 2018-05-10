@@ -3,7 +3,7 @@ package notifier
 import (
 	"fmt"
 
-	"github.com/engineyard/scaley/group"
+	"github.com/engineyard/scaley/pkg/group"
 )
 
 func Failure(g *group.Group, message string) {

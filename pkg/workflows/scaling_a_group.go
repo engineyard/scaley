@@ -6,9 +6,9 @@ import (
 	"github.com/engineyard/eycore/core"
 	"github.com/engineyard/eycore/users"
 
-	"github.com/engineyard/scaley/group"
-	"github.com/engineyard/scaley/notifier"
-	"github.com/engineyard/scaley/util"
+	"github.com/engineyard/scaley/pkg/group"
+	"github.com/engineyard/scaley/pkg/notifier"
+	"github.com/engineyard/scaley/pkg/util"
 )
 
 type ScalingAGroup struct {

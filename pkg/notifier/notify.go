@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/engineyard/scaley/util"
+	"github.com/engineyard/scaley/pkg/util"
 )
 
 func notify(level int, message string) {

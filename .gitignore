@@ -4,3 +4,4 @@ builds/
 scaley
 coverage.out
 .quality
+.coverage

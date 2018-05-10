@@ -3,7 +3,7 @@ package group
 import (
 	"fmt"
 
-	"github.com/engineyard/scaley/common"
+	"github.com/engineyard/scaley/pkg/common"
 )
 
 func Validate(group *Group) error {
