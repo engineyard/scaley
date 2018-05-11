@@ -1,0 +1,4 @@
+[[constraint]]
+  name = "github.com/DATA-DOG/godog"
+  version = "0.7.4"
+
