@@ -1,11 +1,11 @@
 package kennel
 
-import (
-	"github.com/DATA-DOG/godog"
-)
+type Suite interface {
+	Step(interface{}, interface{})
+}
 
 type Stepper interface {
-	StepUp(*godog.Suite)
+	StepUp(Suite)
 }
 
 var steppers []Stepper
@@ -14,7 +14,7 @@ func Register(s Stepper) {
 	steppers = append(steppers, s)
 }
 
-func StepUp(s *godog.Suite) {
+func StepUp(s Suite) {
 	for _, stepper := range steppers {
 		stepper.StepUp(s)
 	}

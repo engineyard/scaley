@@ -43,14 +43,14 @@
 [[projects]]
   name = "github.com/ess/jamaica"
   packages = ["."]
-  revision = "ea4c8e0df87223fe11f4a6a26322aebcdb3123e2"
-  version = "v0.0.7"
+  revision = "2bd591868a3b409fdcb6c36931a641cae18a890b"
+  version = "v0.0.8"
 
 [[projects]]
   name = "github.com/ess/kennel"
   packages = ["."]
-  revision = "0c009367b08724c04ed6da031a5f3cb87af79a9c"
-  version = "v0.0.1"
+  revision = "dfdfc776c5797476a1564a060ba4c3c196403df1"
+  version = "v0.0.2"
 
 [[projects]]
   name = "github.com/ess/mockable"
@@ -174,6 +174,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "6c8fda58c0427bf17a7c542669af300432f82db987977fe7d987a8f91a722443"
+  inputs-digest = "0f0e93d999136b7ff10eee87be8ee7994a8db6f2b6bb4c7770673c4c2fa537b1"
   solver-name = "gps-cdcl"
   solver-version = 1
