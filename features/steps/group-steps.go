@@ -4,6 +4,9 @@ import (
 	//"fmt"
 
 	"github.com/ess/kennel"
+	"github.com/spf13/afero"
+
+	"github.com/engineyard/scaley/pkg/common"
 )
 
 type Group struct{}
@@ -31,6 +34,10 @@ func (steps *Group) StepUp(s kennel.Suite) {
 
 	s.Step(`^no changes are made$`, func() error {
 		return nil
+	})
+
+	s.BeforeScenario(func(interface{}) {
+		common.Root = afero.NewMemMapFs()
 	})
 
 }

@@ -47,7 +47,7 @@ func dataDir() string {
 
 var CreateDir = func(path string) {
 	if !FileExists(path) {
-		err := os.MkdirAll(path, 0644)
+		err := Root.MkdirAll(path, 0644)
 		if err != nil {
 			fmt.Println("Could not create", path)
 			os.Exit(255)
@@ -56,7 +56,7 @@ var CreateDir = func(path string) {
 }
 
 func FileExists(path string) bool {
-	_, err := os.Stat(path)
+	_, err := Root.Stat(path)
 
 	if os.IsNotExist(err) {
 		return false

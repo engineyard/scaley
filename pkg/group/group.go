@@ -2,7 +2,6 @@ package group
 
 import (
 	"fmt"
-	"io/ioutil"
 
 	"github.com/engineyard/eycore/core"
 	"github.com/engineyard/eycore/environments"
@@ -35,7 +34,7 @@ func ByName(api core.Client, name string) (*Group, error) {
 		return nil, fmt.Errorf("No group named '%s'", name)
 	}
 
-	data, err := ioutil.ReadFile(file)
+	data, err := common.ReadFile(file)
 	if err != nil {
 		return nil, err
 	}
