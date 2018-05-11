@@ -2,6 +2,7 @@ package kennel
 
 type Suite interface {
 	Step(interface{}, interface{})
+	BeforeScenario(func(interface{}))
 }
 
 type Stepper interface {
