@@ -51,7 +51,7 @@ func TestServerReq(t *testing.T) {
 
 	t.Run("when the JSON can't be parsed", func(t *testing.T) {
 		api := &fakey.Client{}
-		api.AddResponse("put", "{request:}")
+		api.AddResponse("put", "path/2", "{request:}")
 
 		_, err := ServerReq(api, "path/2")
 		if err != nil && err.Error() != "The API returned an invalid response when doing PUT path/2" {
@@ -61,7 +61,7 @@ func TestServerReq(t *testing.T) {
 
 	t.Run("when the API call succeeds", func(t *testing.T) {
 		api := &fakey.Client{}
-		api.AddResponse("put", `{"request":{}}`)
+		api.AddResponse("put", "path/3", `{"request":{}}`)
 
 		req, err := ServerReq(api, "path/3")
 		if err != nil {
@@ -99,7 +99,7 @@ func TestWaitFor(t *testing.T) {
 
 		t.Run("but is not finished", func(t *testing.T) {
 			api := &fakey.Client{}
-			api.AddResponse("get", `{"request":{"finished_at":"now"}}`)
+			api.AddResponse("get", "/requests/", `{"request":{"finished_at":"now"}}`)
 
 			request := &requests.Model{}
 
