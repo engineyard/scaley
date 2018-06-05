@@ -11,12 +11,14 @@ import (
 	"github.com/engineyard/scaley/cmd/scaley/cmd"
 	"github.com/ess/jamaica"
 	"github.com/ess/kennel"
+	"github.com/ess/mockable"
 )
 
 var commandOutput string
 var lastCommandRanErr error
 
 func TestMain(m *testing.M) {
+	mockable.Enable()
 	steps.Register()
 	jamaica.SetRootCmd(cmd.RootCmd)
 

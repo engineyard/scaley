@@ -22,7 +22,7 @@ package eycore
 import (
 	"github.com/engineyard/eycore/client"
 	"github.com/engineyard/eycore/core"
-	"github.com/ess/mockable"
+	//"github.com/ess/mockable"
 )
 
 // NewClient returns a new Core API client that is initialized with the provided
@@ -33,10 +33,13 @@ import (
 // data set.
 //
 // Otherwise, it is a client that interacts with the real Engine Yard Core API.
-func NewClient(host string, token string) core.Client {
-	if mockable.Mocked() {
-		return client.NewMockAPI(host, token)
-	}
+//func NewClient(host string, token string) core.Client {
+//if mockable.Mocked() {
+//return client.NewMockAPI(host, token)
+//}
 
+//return client.NewCoreAPI(host, token)
+//}
+var NewClient = func(host string, token string) core.Client {
 	return client.NewCoreAPI(host, token)
 }

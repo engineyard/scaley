@@ -1,31 +1,31 @@
 package steps
 
 import (
-	//"fmt"
+	"fmt"
 
+	"github.com/ess/jamaica"
 	"github.com/ess/kennel"
+
+	"github.com/engineyard/scaley/pkg/basher"
 )
 
 type ScalingDown struct{}
 
 func (steps *ScalingDown) StepUp(s kennel.Suite) {
 	s.Step(`^conditions dictate that downscaling is necessary$`, func() error {
-		return nil
-	})
+		basher.Run = func(string) int {
+			return 1
+		}
 
-	s.Step(`^there is capacity for the group to downscale$`, func() error {
-		return nil
-	})
-
-	s.Step(`^the group is scaled down$`, func() error {
-		return nil
-	})
-
-	s.Step(`^there is not capacity for the group to downscale$`, func() error {
 		return nil
 	})
 
 	s.Step(`^no messages are logged$`, func() error {
+		if len(jamaica.LastCommandOutput()) > 0 {
+			fmt.Println("output:", jamaica.LastCommandOutput())
+			return fmt.Errorf("A message was logged")
+		}
+
 		return nil
 	})
 

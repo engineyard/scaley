@@ -2,7 +2,6 @@ package group
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/engineyard/eycore/core"
 
@@ -35,7 +34,7 @@ var lock = func(group *Group) error {
 		return fmt.Errorf("Group operations are locked for '%s'", group.Name)
 	}
 
-	l, err := os.Create(lockfile)
+	l, err := common.Root.Create(lockfile)
 	if err != nil {
 		return fmt.Errorf("Could not create lock file for '%s'", group.Name)
 	}
@@ -49,7 +48,7 @@ var unlock = func(group *Group) error {
 	lockfile := lockfile(group)
 
 	if common.FileExists(lockfile) {
-		err := os.Remove(lockfile)
+		err := common.Root.Remove(lockfile)
 		if err != nil {
 			return fmt.Errorf("Could not remove lock file for '%s'", group.Name)
 		}

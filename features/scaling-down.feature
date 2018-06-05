@@ -5,7 +5,8 @@ Feature: Scaling Down
   down when it makes sense to do so.
 
   Background:
-    Given I have a group named mygroup
+    Given I have a scaley config
+    And I have a group named mygroup
     And I have a script that determines if I should scale up or down
     And conditions dictate that downscaling is necessary
 
@@ -22,5 +23,6 @@ Feature: Scaling Down
 
   Scenario: Attempting to downscale while a scaling event is in progress
     Given a scaling lockfile exists for the group
+    And there is capacity for the group to downscale
     When I run `scaley scale mygroup`
     Then no changes are made

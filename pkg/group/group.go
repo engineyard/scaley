@@ -44,15 +44,13 @@ func ByName(api core.Client, name string) (*Group, error) {
 		return nil, err
 	}
 
-	allServers := append(group.PermanentServers, group.ScalingServers...)
-
-	for _, server := range allServers {
+	for _, server := range group.ScalingServers {
 		server.Instance = finders.FindServer(api, server.ID)
 	}
 
 	group.Environment = finders.EnvironmentForServer(
 		api,
-		group.PermanentServers[0].Instance,
+		group.ScalingServers[0].Instance,
 	)
 
 	return group, nil

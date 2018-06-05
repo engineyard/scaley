@@ -16,15 +16,15 @@ func Validate(group *Group) error {
 		return fmt.Errorf("%s scaling_script does not exist on the file system", group.Name)
 	}
 
-	if len(group.PermanentServers) < 1 {
-		return fmt.Errorf("%s contains no permanent servers", group.Name)
-	}
+	//if len(group.PermanentServers) < 1 {
+	//return fmt.Errorf("%s contains no permanent servers", group.Name)
+	//}
 
-	for _, server := range group.PermanentServers {
-		if server.Instance == nil {
-			return fmt.Errorf("%s contains invalid permanent server %s", group.Name, server.ID)
-		}
-	}
+	//for _, server := range group.PermanentServers {
+	//if server.Instance == nil {
+	//return fmt.Errorf("%s contains invalid permanent server %s", group.Name, server.ID)
+	//}
+	//}
 
 	if len(group.ScalingServers) < 1 {
 		return fmt.Errorf("%s contains no scaling servers", group.Name)
