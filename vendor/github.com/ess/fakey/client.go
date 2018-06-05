@@ -1,20 +1,21 @@
 package fakey
 
 import (
-	"errors"
+	"fmt"
 	"net/url"
 
 	"github.com/engineyard/eycore/core"
+	"github.com/engineyard/eycore/logger"
 )
 
 type Client struct {
 	requests  map[string][]string
-	responses map[string][]string
+	responses *ResponseCollection
 }
 
 func (api *Client) setup() {
 	if api.responses == nil {
-		api.responses = make(map[string][]string)
+		api.responses = &ResponseCollection{}
 	}
 
 	if api.requests == nil {
@@ -32,28 +33,10 @@ func (api *Client) Requests(method string) []string {
 	return requests
 }
 
-func (api *Client) AddResponse(method string, response string) {
+func (api *Client) AddResponse(method string, path string, response string) {
 	api.setup()
 
-	api.responses[method] = append(api.responses[method], response)
-}
-
-func (api *Client) consume(method string) (string, error) {
-	var response string
-
-	api.setup()
-
-	switch len(api.responses[method]) {
-	case 0:
-		return response, errors.New("No response")
-	case 1:
-		response = api.responses[method][0]
-		api.responses[method] = nil
-	default:
-		response, api.responses[method] = api.responses[method][0], api.responses[method][1:]
-	}
-
-	return response, nil
+	api.responses.Add(method, path, response)
 }
 
 func (api *Client) handle(method string, path string) ([]byte, error) {
@@ -61,26 +44,39 @@ func (api *Client) handle(method string, path string) ([]byte, error) {
 
 	api.requests[method] = append(api.requests[method], path)
 
-	response, err := api.consume(method)
+	logger.Info("fakey", fmt.Sprintf("method: %s, path: %s", method, path))
+
+	response, err := api.responses.Consume(method, path)
 	if err != nil {
+		logger.Error("fakey", err.Error())
 		return nil, err
 	}
+
+	logger.Info("fakey", fmt.Sprintf("response: %s", response))
 
 	return []byte(response), nil
 }
 
 func (api *Client) Get(path string, params url.Values) ([]byte, error) {
-	return api.handle("get", path)
+	return api.handle("get", path+api.processParams(params))
 }
 
 func (api *Client) Post(path string, params url.Values, body core.Body) ([]byte, error) {
-	return api.handle("post", path)
+	return api.handle("post", path+api.processParams(params))
 }
 
 func (api *Client) Put(path string, params url.Values, body core.Body) ([]byte, error) {
-	return api.handle("put", path)
+	return api.handle("put", path+api.processParams(params))
 }
 
 func (api *Client) Delete(path string, params url.Values) ([]byte, error) {
-	return api.handle("delete", path)
+	return api.handle("delete", path+api.processParams(params))
+}
+
+func (api *Client) processParams(params url.Values) string {
+	if len(params) > 0 {
+		return "?" + params.Encode()
+	}
+
+	return ""
 }

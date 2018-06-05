@@ -17,4 +17,4 @@ go:
   #- dep ensure
 
 script:
-  - go test $(go list ./... | grep -v /vendor) -cover
+  - make test

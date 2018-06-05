@@ -1,6 +1,7 @@
 *~
 *.swp
 builds/
-scaley
+/scaley
 coverage.out
 .quality
+.coverage

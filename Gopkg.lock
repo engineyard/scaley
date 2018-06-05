@@ -2,6 +2,16 @@
 
 
 [[projects]]
+  name = "github.com/DATA-DOG/godog"
+  packages = [
+    ".",
+    "colors",
+    "gherkin"
+  ]
+  revision = "0371765570d36374bef4ab9f62ed0491f0862a3c"
+  version = "v0.7.6"
+
+[[projects]]
   name = "github.com/engineyard/eycore"
   packages = [
     ".",
@@ -29,6 +39,18 @@
   name = "github.com/ess/fakey"
   packages = ["."]
   revision = "31e52d811bda0008c9c751d144e6aa7d2013c5cd"
+
+[[projects]]
+  name = "github.com/ess/jamaica"
+  packages = ["."]
+  revision = "2bd591868a3b409fdcb6c36931a641cae18a890b"
+  version = "v0.0.8"
+
+[[projects]]
+  name = "github.com/ess/kennel"
+  packages = ["."]
+  revision = "e18fdabd2a98463f443a8a44466879da0b8da599"
+  version = "v0.0.3"
 
 [[projects]]
   name = "github.com/ess/mockable"
@@ -91,8 +113,8 @@
     ".",
     "mem"
   ]
-  revision = "bb8f1927f2a9d3ab41c9340aa034f6b803f4359c"
-  version = "v1.0.2"
+  revision = "63644898a8da0bc22138abf860edaf5277b6102e"
+  version = "v1.1.0"
 
 [[projects]]
   name = "github.com/spf13/cast"
@@ -152,6 +174,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "1fb1134754f1b856ea6c168439607211b5773fb55574675cd8861a46bac42216"
+  inputs-digest = "06f1bec0e79a6f693e76a507b59e4e8d675e966a95e74abd8d0d154e61fc3297"
   solver-name = "gps-cdcl"
   solver-version = 1
