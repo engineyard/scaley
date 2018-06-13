@@ -5,17 +5,13 @@ import (
 
 	"github.com/ess/jamaica"
 	"github.com/ess/kennel"
-
-	"github.com/engineyard/scaley/pkg/basher"
 )
 
 type ScalingDown struct{}
 
 func (steps *ScalingDown) StepUp(s kennel.Suite) {
 	s.Step(`^conditions dictate that downscaling is necessary$`, func() error {
-		basher.Run = func(string) int {
-			return 1
-		}
+		stubBasher(1)
 
 		return nil
 	})

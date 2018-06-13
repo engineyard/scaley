@@ -7,17 +7,13 @@ import (
 	"github.com/ess/jamaica"
 	"github.com/ess/kennel"
 	"github.com/ess/mockable"
-
-	"github.com/engineyard/scaley/pkg/basher"
 )
 
 type ScalingUp struct{}
 
 func (steps *ScalingUp) StepUp(s kennel.Suite) {
 	s.Step(`^conditions dictate that upscaling is necessary$`, func() error {
-		basher.Run = func(string) int {
-			return 2
-		}
+		stubBasher(2)
 
 		return nil
 	})
