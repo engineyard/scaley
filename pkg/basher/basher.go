@@ -10,7 +10,6 @@ var Run func(command string) int
 func init() {
 	if Run == nil {
 		Run = func(command string) int {
-			panic("like a motherfucker")
 			cmd := exec.Command("bash", "-c", command)
 			var waitStatus syscall.WaitStatus
 
