@@ -16,3 +16,7 @@ func (s *Server) AmazonID() string {
 func (s *Server) EngineYardID() int {
 	return s.Instance.ID
 }
+
+func (s *Server) Hostname() string {
+	return s.Instance.PrivateHostname
+}

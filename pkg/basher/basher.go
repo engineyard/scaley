@@ -5,16 +5,23 @@ import (
 	"syscall"
 )
 
-var Run = func(command string) int {
-	cmd := exec.Command("bash", "-c", command)
-	var waitStatus syscall.WaitStatus
+var Run func(command string) int
 
-	if err := cmd.Run(); err != nil {
-		if exitError, ok := err.(*exec.ExitError); ok {
-			waitStatus = exitError.Sys().(syscall.WaitStatus)
-			return waitStatus.ExitStatus()
+func init() {
+	if Run == nil {
+		Run = func(command string) int {
+			panic("like a motherfucker")
+			cmd := exec.Command("bash", "-c", command)
+			var waitStatus syscall.WaitStatus
+
+			if err := cmd.Run(); err != nil {
+				if exitError, ok := err.(*exec.ExitError); ok {
+					waitStatus = exitError.Sys().(syscall.WaitStatus)
+					return waitStatus.ExitStatus()
+				}
+			}
+
+			return 0
 		}
 	}
-
-	return 0
 }

@@ -38,7 +38,7 @@ func (scaler *legion) Downscale() error {
 	failures := make([]string, 0)
 
 	for _, s := range scaler.group.Candidates("down") {
-		err := stopServer(s, scaler.api)
+		err := stopServer(s, scaler.api, scaler.group.PreStop())
 		if err != nil {
 			failures = append(failures, s.AmazonID())
 		}
