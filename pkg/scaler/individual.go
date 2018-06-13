@@ -40,7 +40,7 @@ func (scaler *individual) Downscale() error {
 
 	candidate := candidates[0]
 
-	if err := stopServer(candidate, scaler.api); err != nil {
+	if err := stopServer(candidate, scaler.api, scaler.group.PreStop()); err != nil {
 		return fmt.Errorf(downFail, candidate.AmazonID())
 	}
 

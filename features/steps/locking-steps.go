@@ -26,6 +26,14 @@ func (steps *Locking) StepUp(s kennel.Suite) {
 		)
 	})
 
+	s.Step(`^the group remains locked$`, func() error {
+		if !common.FileExists(common.Locks() + "/mygroup") {
+			return fmt.Errorf("There is no lockfile for the group")
+		}
+
+		return nil
+	})
+
 }
 
 func init() {

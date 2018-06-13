@@ -12,7 +12,6 @@ import (
 	"github.com/spf13/afero"
 	"gopkg.in/yaml.v2"
 
-	"github.com/engineyard/scaley/pkg/basher"
 	"github.com/engineyard/scaley/pkg/common"
 	"github.com/engineyard/scaley/pkg/group"
 )
@@ -72,7 +71,7 @@ func (steps *Group) stubServer(id int, provisionedId string, state string) {
 	steps.api.AddResponse(
 		"get",
 		fmt.Sprintf("/servers?page=1&per_page=100&provisioned_id=%s", provisionedId),
-		fmt.Sprintf(`{"servers" : [{"id" : %d, "provisioned_id" : "%s", "state" : "%s", "environment": "/1"}]}`, id, provisionedId, state),
+		fmt.Sprintf(`{"servers" : [{"id" : %d, "provisioned_id" : "%s", "state" : "%s", "private_hostname": "server%d", "environment": "/1"}]}`, id, provisionedId, state, id),
 	)
 
 	steps.api.AddResponse(
@@ -108,15 +107,7 @@ func (steps *Group) stubChef(success bool) {
 
 func (steps *Group) StepUp(s kennel.Suite) {
 	s.Step(`^I have a group named mygroup$`, func() error {
-		steps.model = &group.Group{
-			Name: "mygroup",
-			ScalingServers: []*group.Server{
-				&group.Server{ID: "i-00000001"},
-				&group.Server{ID: "i-00000002"},
-			},
-			ScalingScript: "/bin/decider",
-			Strategy:      "legion",
-		}
+		steps.model = generateGroup()
 
 		return steps.writeGroup()
 	})
@@ -200,6 +191,28 @@ func (steps *Group) StepUp(s kennel.Suite) {
 		return nil
 	})
 
+	s.Step(`^all applicable servers but the first server are stopped$`, func() error {
+		found := 0
+
+		for _, id := range []string{"0", "1"} {
+			for _, path := range steps.api.Requests("put") {
+				if path == "/servers/"+id+"/stop" {
+					if id == "0" {
+						return fmt.Errorf("Expected the first server not to be stopped")
+					} else {
+						found += 1
+					}
+				}
+			}
+		}
+
+		if found != len(steps.model.ScalingServers)-1 {
+			return fmt.Errorf("Expected all servers but the first to be stopped")
+		}
+
+		return nil
+	})
+
 	s.Step(`^there is not capacity for the group to upscale$`, func() error {
 		steps.stubEnvironment()
 
@@ -240,11 +253,26 @@ func (steps *Group) StepUp(s kennel.Suite) {
 
 	})
 
+	s.Step(`^my group does not use a custom stop script$`, func() error {
+		steps.model.StopScript = ""
+
+		return steps.writeGroup()
+	})
+
+	s.Step(`^my group uses a custom stop script that always succeeds$`, func() error {
+		steps.model.StopScript = "stop_script_good"
+
+		return steps.writeGroup()
+	})
+
+	s.Step(`^my group uses a custom stop script that fails for the first server$`, func() error {
+		steps.model.StopScript = "stop_script_bad"
+
+		return steps.writeGroup()
+	})
+
 	s.BeforeScenario(func(interface{}) {
-		// Fake out the bash runner
-		basher.Run = func(command string) int {
-			return 0
-		}
+		stubBasher(0)
 		steps.api = &fakey.Client{}
 		steps.api.AddResponse("get", "/users/current", `{"user": {}}`)
 

@@ -131,3 +131,7 @@ func (g *Group) candidatesForDownscale() []scaler.Server {
 func (g *Group) ScalingStrategy() string {
 	return g.Strategy
 }
+
+func (g *Group) PreStop() string {
+	return g.StopScript
+}

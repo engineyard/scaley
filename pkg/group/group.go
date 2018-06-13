@@ -16,6 +16,7 @@ type Group struct {
 	PermanentServers []*Server `yaml:"permanent_servers"`
 	ScalingServers   []*Server `yaml:"scaling_servers"`
 	ScalingScript    string    `yaml:"scaling_script"`
+	StopScript       string    `yaml:"stop_script"`
 	Strategy         string    `yaml:"strategy"`
 	Environment      *environments.Model
 }
