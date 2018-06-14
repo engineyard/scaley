@@ -146,6 +146,12 @@ func (steps *Group) StepUp(s kennel.Suite) {
 		return steps.writeGroup()
 	})
 
+	s.Step(`^my group is configured to use the individual strategy$`, func() error {
+		steps.model = generateGroup("individual")
+
+		return steps.writeGroup()
+	})
+
 	s.Step(`^I have a script that determines if I should scale up or down$`, func() error {
 
 		// Create a dummy scripts location in the fake FS
@@ -205,6 +211,14 @@ func (steps *Group) StepUp(s kennel.Suite) {
 		return nil
 	})
 
+	s.Step(`^only one server in the group is started$`, func() error {
+		if len(steps.serversStarted()) > 1 {
+			return fmt.Errorf("More than one server was started")
+		}
+
+		return nil
+	})
+
 	s.Step(`^the group is scaled down$`, func() error {
 		if len(steps.serversStopped()) != 2 {
 			return fmt.Errorf("At least one server was not scaled down")
@@ -216,6 +230,14 @@ func (steps *Group) StepUp(s kennel.Suite) {
 	s.Step(`^all of the servers in the group are stopped$`, func() error {
 		if len(steps.serversStopped()) != len(steps.model.ScalingServers) {
 			return fmt.Errorf("At least one server was not stopped")
+		}
+
+		return nil
+	})
+
+	s.Step(`^only one server in the group is stopped$`, func() error {
+		if len(steps.serversStopped()) > 1 {
+			return fmt.Errorf("More than one server was stopped")
 		}
 
 		return nil
