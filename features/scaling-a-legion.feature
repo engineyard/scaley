@@ -2,8 +2,8 @@ Feature: Scaling A Legion
   For some workflows, it makes sense to invite the whole team to the
   party when there's work to be done. This is how the legion strategy
   works. When a scaling event occurs, all of the scaling servers in
-  are brought either up or down, depending on which operation is
-  requested by the scaling script.
+  the group are brought either up or down, depending on which operation
+  is requested by the scaling script.
 
   Background:
     Given I have a scaley config
