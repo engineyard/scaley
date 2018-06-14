@@ -10,7 +10,11 @@ import (
 
 var mygroup *group.Group
 
-func generateGroup() *group.Group {
+func generateGroup(strategy string) *group.Group {
+	if len(strategy) == 0 {
+		strategy = "legion"
+	}
+
 	mygroup = &group.Group{
 		Name: "mygroup",
 		ScalingServers: []*group.Server{
@@ -18,7 +22,7 @@ func generateGroup() *group.Group {
 			&group.Server{ID: "i-00000002"},
 		},
 		ScalingScript: "/bin/decider",
-		Strategy:      "legion",
+		Strategy:      strategy,
 	}
 
 	return mygroup
