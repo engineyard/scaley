@@ -105,9 +105,43 @@ func (steps *Group) stubChef(success bool) {
 	)
 }
 
+func (steps *Group) serversStarted() []string {
+	found := make([]string, 0)
+
+	for _, id := range []string{"0", "1"} {
+		for _, path := range steps.api.Requests("put") {
+			if path == "/servers/"+id+"/start" {
+				found = append(found, id)
+			}
+		}
+	}
+
+	return found
+}
+
+func (steps *Group) serversStopped() []string {
+	found := make([]string, 0)
+
+	for _, id := range []string{"0", "1"} {
+		for _, path := range steps.api.Requests("put") {
+			if path == "/servers/"+id+"/stop" {
+				found = append(found, id)
+			}
+		}
+	}
+
+	return found
+}
+
 func (steps *Group) StepUp(s kennel.Suite) {
 	s.Step(`^I have a group named mygroup$`, func() error {
-		steps.model = generateGroup()
+		steps.model = generateGroup("")
+
+		return steps.writeGroup()
+	})
+
+	s.Step(`^my group is configured to use the legion strategy`, func() error {
+		steps.model = generateGroup("legion")
 
 		return steps.writeGroup()
 	})
@@ -156,57 +190,47 @@ func (steps *Group) StepUp(s kennel.Suite) {
 	})
 
 	s.Step(`^the group is scaled up$`, func() error {
-		found := 0
-
-		for _, id := range []string{"0", "1"} {
-			for _, path := range steps.api.Requests("put") {
-				if path == "/servers/"+id+"/start" {
-					found += 1
-				}
-			}
-		}
-
-		if found != 2 {
+		if len(steps.serversStarted()) != 2 {
 			return fmt.Errorf("At least one server was not scaled up")
 		}
 
 		return nil
 	})
 
-	s.Step(`^the group is scaled down$`, func() error {
-		found := 0
-
-		for _, id := range []string{"0", "1"} {
-			for _, path := range steps.api.Requests("put") {
-				if path == "/servers/"+id+"/stop" {
-					found += 1
-				}
-			}
+	s.Step(`^all of the servers in the group are started$`, func() error {
+		if len(steps.serversStarted()) != len(steps.model.ScalingServers) {
+			return fmt.Errorf("At least one server was not started")
 		}
 
-		if found != 2 {
+		return nil
+	})
+
+	s.Step(`^the group is scaled down$`, func() error {
+		if len(steps.serversStopped()) != 2 {
 			return fmt.Errorf("At least one server was not scaled down")
 		}
 
 		return nil
 	})
 
-	s.Step(`^all applicable servers but the first server are stopped$`, func() error {
-		found := 0
+	s.Step(`^all of the servers in the group are stopped$`, func() error {
+		if len(steps.serversStopped()) != len(steps.model.ScalingServers) {
+			return fmt.Errorf("At least one server was not stopped")
+		}
 
-		for _, id := range []string{"0", "1"} {
-			for _, path := range steps.api.Requests("put") {
-				if path == "/servers/"+id+"/stop" {
-					if id == "0" {
-						return fmt.Errorf("Expected the first server not to be stopped")
-					} else {
-						found += 1
-					}
-				}
+		return nil
+	})
+
+	s.Step(`^all applicable servers but the first server are stopped$`, func() error {
+		found := steps.serversStopped()
+
+		for _, id := range found {
+			if id == "0" {
+				return fmt.Errorf("Expected the first server not to be stopped")
 			}
 		}
 
-		if found != len(steps.model.ScalingServers)-1 {
+		if len(found) != len(steps.model.ScalingServers)-1 {
 			return fmt.Errorf("Expected all servers but the first to be stopped")
 		}
 

@@ -42,7 +42,7 @@ distclean:
 	rm -rf ${TARGET}
 
 test:
-	go test ${TESTFILES} -v -cover
+	go test ${TESTFILES} -v -cover -coverpkg=./pkg/...,./cmd/...
 
 coverage:
 	go test ${TESTFILES} -coverprofile=coverage.out
