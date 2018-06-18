@@ -19,7 +19,7 @@ func (steps *ScalingUp) StepUp(s kennel.Suite) {
 	})
 
 	s.Step(`^a warning is logged regarding the insufficient capacity$`, func() error {
-		if !strings.Contains(jamaica.LastCommandOutput(), "WARNING : Group[mygroup]: Cannot be scaled up - Consider adding more servers to the group") {
+		if !strings.Contains(jamaica.LastCommandStdout(), "WARNING : Group[mygroup]: Cannot be scaled up - Consider adding more servers to the group") {
 			return fmt.Errorf("Warning not found")
 		}
 

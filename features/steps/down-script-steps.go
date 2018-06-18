@@ -14,7 +14,7 @@ type DownScript struct{}
 func (steps *DownScript) StepUp(s kennel.Suite) {
 
 	s.Step(`^the stop script is not executed$`, func() error {
-		if strings.Contains(jamaica.LastCommandOutput(), "STOP_SCRIPT:") {
+		if strings.Contains(jamaica.LastCommandStdout(), "STOP_SCRIPT:") {
 			return fmt.Errorf("Expected the stop script to not be run")
 		}
 
@@ -22,7 +22,7 @@ func (steps *DownScript) StepUp(s kennel.Suite) {
 	})
 
 	s.Step(`^the stop script is executed for each target server$`, func() error {
-		output := jamaica.LastCommandOutput()
+		output := jamaica.LastCommandStdout()
 
 		expected := len(mygroup.ScalingServers)
 		actual := strings.Count(output, "STOP_SCRIPT")
@@ -35,7 +35,7 @@ func (steps *DownScript) StepUp(s kennel.Suite) {
 	})
 
 	s.Step(`^a stop script failure is logged for the first server$`, func() error {
-		output := jamaica.LastCommandOutput()
+		output := jamaica.LastCommandStdout()
 
 		expected := 1
 		actual := strings.Count(output, "STOP_SCRIPT_ERROR")

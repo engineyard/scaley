@@ -17,8 +17,8 @@ func (steps *ScalingDown) StepUp(s kennel.Suite) {
 	})
 
 	s.Step(`^no messages are logged$`, func() error {
-		if len(jamaica.LastCommandOutput()) > 0 {
-			fmt.Println("output:", jamaica.LastCommandOutput())
+		if len(jamaica.LastCommandStdout()) > 0 {
+			fmt.Println("output:", jamaica.LastCommandStdout())
 			return fmt.Errorf("A message was logged")
 		}
 

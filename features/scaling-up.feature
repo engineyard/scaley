@@ -13,16 +13,19 @@ Feature: Scaling Up
     Given there is capacity for the group to upscale
     When I run `scaley scale mygroup`
     Then the group is scaled up
-    And the command succeeds
+    And it exits successfully
 
   Scenario: Scaling with insufficient capacity
     Given there is not capacity for the group to upscale
     When I run `scaley scale mygroup`
     Then a warning is logged regarding the insufficient capacity
+    And it exits successfully
     But no changes are made
 
+    @failure
   Scenario: Attempting to upscale while a scaling event is in progress
     Given a scaling lockfile exists for the group
     And there is capacity for the group to upscale
     When I run `scaley scale mygroup`
-    Then no changes are made
+    Then it exits with an error
+    And no changes are made
