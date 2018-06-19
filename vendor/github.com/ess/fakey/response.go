@@ -16,6 +16,14 @@ func (rc *ResponseCollection) Add(method, path, response string) {
 	rc.responses[identifier] = append(rc.responses[identifier], response)
 }
 
+func (rc *ResponseCollection) Remove(method, path string) {
+	identifier := rc.identify(method, path)
+
+	rc.responses[identifier] = nil
+
+	rc.setup(identifier)
+}
+
 func (rc *ResponseCollection) Consume(method, path string) (string, error) {
 	var response string
 

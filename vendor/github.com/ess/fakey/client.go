@@ -39,6 +39,12 @@ func (api *Client) AddResponse(method string, path string, response string) {
 	api.responses.Add(method, path, response)
 }
 
+func (api *Client) RemoveResponse(method string, path string) {
+	api.setup()
+
+	api.responses.Remove(method, path)
+}
+
 func (api *Client) handle(method string, path string) ([]byte, error) {
 	api.setup()
 

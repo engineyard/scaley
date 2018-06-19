@@ -15,12 +15,18 @@ Feature: Scaling Up
     Then the group is scaled up
     And it exits successfully
 
-  Scenario: Scaling with insufficient capacity
+  Scenario Outline: Scaling with insufficient capacity
+    Given my group is configured to use the <Strategy> strategy
     Given there is not capacity for the group to upscale
     When I run `scaley scale mygroup`
     Then a warning is logged regarding the insufficient capacity
     And it exits successfully
     But no changes are made
+
+    Examples:
+      | Strategy    |
+      | individual  |
+      | legion      |
 
     @failure
   Scenario: Attempting to upscale while a scaling event is in progress
@@ -29,3 +35,59 @@ Feature: Scaling Up
     When I run `scaley scale mygroup`
     Then it exits with an error
     And no changes are made
+
+    @failure
+  Scenario Outline: Start server yields an invalid API response
+    Given my group is configured to use the <Strategy> strategy
+    Given there is capacity for the group to upscale
+    But the API is erroring on server start requests
+    When I run `scaley scale mygroup`
+    Then it exits with an error
+    And a scaling failure is logged
+
+    Examples:
+      | Strategy    |
+      | individual  |
+      | legion      |
+
+    @failure
+  Scenario Outline: Server start failure
+    Given my group is configured to use the <Strategy> strategy
+    And there is capacity for the group to upscale
+    But the servers cannot be started successfully
+    When I run `scaley scale mygroup`
+    Then it exits with an error
+    And a scaling failure is logged
+
+    Examples:
+      | Strategy    |
+      | individual  |
+      | legion      |
+
+    @failure
+  Scenario Outline: Chef run yields an API error
+    Given my group is configured to use the <Strategy> strategy
+    And there is capacity for the group to upscale
+    But the API is erroring on environment configuration requests
+    When I run `scaley scale mygroup`
+    Then it exits with an error
+    And a chef failure is logged
+
+    Examples:
+      | Strategy    |
+      | individual  |
+      | legion      |
+
+    @failure
+  Scenario Outline: Chef run failure
+    Given my group is configured to use the <Strategy> strategy
+    Given there is capacity for the group to upscale
+    But the environment cannot run chef successfully
+    When I run `scaley scale mygroup`
+    Then it exits with an error
+    And a chef failure is logged
+
+    Examples:
+      | Strategy    |
+      | individual  |
+      | legion      |

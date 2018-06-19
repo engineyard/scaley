@@ -82,27 +82,30 @@ func (steps *Group) stubServer(id int, provisionedId string, state string) {
 }
 
 func (steps *Group) stubStart(id int, provisionedId string, success bool) {
-	steps.api.AddResponse(
-		"put",
-		fmt.Sprintf("/servers/%d/start", id),
-		fmt.Sprintf(`{"request" : {"type" : "start_server", "id" : "%s", "finished_at" : "2018-05-14T00:00:00+00:00", "successful" : %t}}`, provisionedId, success),
-	)
+	method := "put"
+	path := fmt.Sprintf("/servers/%d/start", id)
+	response := fmt.Sprintf(`{"request" : {"type" : "start_server", "id" : "%s", "finished_at" : "2018-05-14T00:00:00+00:00", "successful" : %t}}`, provisionedId, success)
+
+	steps.api.RemoveResponse(method, path)
+	steps.api.AddResponse(method, path, response)
 }
 
 func (steps *Group) stubStop(id int, provisionedId string, success bool) {
-	steps.api.AddResponse(
-		"put",
-		fmt.Sprintf("/servers/%d/stop", id),
-		fmt.Sprintf(`{"request" : {"type" : "stop_server", "id" : "%s", "finished_at" : "2018-05-14T00:00:00+00:00", "successful" : %t}}`, provisionedId, success),
-	)
+	method := "put"
+	path := fmt.Sprintf("/servers/%d/stop", id)
+	response := fmt.Sprintf(`{"request" : {"type" : "stop_server", "id" : "%s", "finished_at" : "2018-05-14T00:00:00+00:00", "successful" : %t}}`, provisionedId, success)
+
+	steps.api.RemoveResponse(method, path)
+	steps.api.AddResponse(method, path, response)
 }
 
 func (steps *Group) stubChef(success bool) {
-	steps.api.AddResponse(
-		"post",
-		"/environments/1/apply",
-		fmt.Sprintf(`{"request" : {"type" : "configure_environment", "id" : "lolchefrun", "finished_at" : "finished", "successful" : %t}}`, success),
-	)
+	method := "post"
+	path := "/environments/1/apply"
+	response := fmt.Sprintf(`{"request" : {"type" : "configure_environment", "id" : "lolchefrun", "finished_at" : "finished", "successful" : %t}}`, success)
+
+	steps.api.RemoveResponse(method, path)
+	steps.api.AddResponse(method, path, response)
 }
 
 func (steps *Group) serversStarted() []string {
@@ -178,6 +181,36 @@ func (steps *Group) StepUp(s kennel.Suite) {
 		}
 
 		steps.stubChef(true)
+
+		return nil
+	})
+
+	s.Step(`^the API is erroring on server start requests$`, func() error {
+		for i, _ := range steps.model.ScalingServers {
+			method := "put"
+			path := fmt.Sprintf("/servers/%d/start", i)
+			steps.api.RemoveResponse(method, path)
+		}
+
+		return nil
+	})
+
+	s.Step(`^the servers cannot be started successfully$`, func() error {
+		for i, server := range steps.model.ScalingServers {
+			steps.stubStart(i, server.ID, false)
+		}
+
+		return nil
+	})
+
+	s.Step(`^the API is erroring on environment configuration requests$`, func() error {
+		steps.api.RemoveResponse("post", "/environments/1/apply")
+
+		return nil
+	})
+
+	s.Step(`^the environment cannot run chef successfully$`, func() error {
+		steps.stubChef(false)
 
 		return nil
 	})
