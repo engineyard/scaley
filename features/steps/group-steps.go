@@ -195,9 +195,27 @@ func (steps *Group) StepUp(s kennel.Suite) {
 		return nil
 	})
 
+	s.Step(`^the API is erroring on server stop requests$`, func() error {
+		for i, _ := range steps.model.ScalingServers {
+			method := "put"
+			path := fmt.Sprintf("/servers/%d/stop", i)
+			steps.api.RemoveResponse(method, path)
+		}
+
+		return nil
+	})
+
 	s.Step(`^the servers cannot be started successfully$`, func() error {
 		for i, server := range steps.model.ScalingServers {
 			steps.stubStart(i, server.ID, false)
+		}
+
+		return nil
+	})
+
+	s.Step(`^the servers cannot be stopped successfully$`, func() error {
+		for i, server := range steps.model.ScalingServers {
+			steps.stubStop(i, server.ID, false)
 		}
 
 		return nil
