@@ -27,6 +27,10 @@ type payload struct {
 	Data *data `json:"data"`
 }
 
+func (p *payload) String() string {
+	return fmt.Sprintf("%s : %s", p.Data.Severity, p.Data.RawMessage)
+}
+
 func newPayload(level int, message string) *payload {
 	return &payload{
 		Message: "alert",
