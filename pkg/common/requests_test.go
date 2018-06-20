@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/ess/fakey"
+	"github.com/ess/testscope"
 
 	"github.com/engineyard/eycore/requests"
 )
@@ -20,6 +21,8 @@ func includesPath(paths []string, query string) bool {
 }
 
 func TestServerReq(t *testing.T) {
+	testscope.SkipUnlessUnit(t)
+
 	t.Run("it performs a PUT request for the given path", func(t *testing.T) {
 		api := &fakey.Client{}
 		path := "/some/incredibly/fake/path"
@@ -75,6 +78,8 @@ func TestServerReq(t *testing.T) {
 }
 
 func TestWaitFor(t *testing.T) {
+	testscope.SkipUnlessUnit(t)
+
 	t.Run("when the request is valid", func(t *testing.T) {
 		t.Run("and is already finished", func(t *testing.T) {
 			api := &fakey.Client{}

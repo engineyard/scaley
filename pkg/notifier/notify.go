@@ -12,11 +12,11 @@ import (
 )
 
 func notify(level int, message string) {
-	if mockable.Mocked() {
-		fmt.Println(severity(level), ":", message)
-	} else {
-		payload := newPayload(level, message)
+	payload := newPayload(level, message)
 
+	if mockable.Mocked() {
+		fmt.Println(payload)
+	} else {
 		if data, err := json.Marshal(payload); err == nil {
 			body := bytes.NewReader(data)
 

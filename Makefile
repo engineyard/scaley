@@ -42,10 +42,7 @@ distclean:
 	rm -rf ${TARGET}
 
 test:
-	go test ${TESTFILES} -count=1 -v -cover -coverpkg=./pkg/...,./cmd/...
-
-coverage:
-	go test ${TESTFILES} -coverprofile=coverage.out -count=1 -v -coverpkg=./pkg/...,./cmd/...
+	./scripts/blanket
 
 linux:
 	CGO_ENABLED=0 GOOS=linux GOARCH=386 go build ${LDFLAGS} -o ${TARGET}/${BINARY}-${VERSION}-linux-386 ${PACKAGE}

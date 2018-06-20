@@ -2,6 +2,8 @@ package common
 
 import (
 	"testing"
+
+	"github.com/ess/testscope"
 )
 
 type paths struct {
@@ -30,6 +32,8 @@ func mockingCreateDir(doit func(*paths)) {
 }
 
 func TestGroupConfigs(t *testing.T) {
+	testscope.SkipUnlessUnit(t)
+
 	t.Run("is the group config path", func(t *testing.T) {
 		mockingCreateDir(func(garbage *paths) {
 			result := GroupConfigs()
@@ -62,6 +66,8 @@ func TestGroupConfigs(t *testing.T) {
 }
 
 func TestLocks(t *testing.T) {
+	testscope.SkipUnlessUnit(t)
+
 	t.Run("is the locks path", func(t *testing.T) {
 		mockingCreateDir(func(garbage *paths) {
 			result := Locks()
@@ -94,6 +100,8 @@ func TestLocks(t *testing.T) {
 }
 
 func TestDataDir(t *testing.T) {
+	testscope.SkipUnlessUnit(t)
+
 	t.Run("is the data path", func(t *testing.T) {
 		mockingCreateDir(func(garbage *paths) {
 			result := DataDir()
@@ -116,6 +124,8 @@ func TestDataDir(t *testing.T) {
 }
 
 func TestFileExists(t *testing.T) {
+	testscope.SkipUnlessUnit(t)
+
 	t.Run("when the path exists", func(t *testing.T) {
 		result := FileExists("locations_test.go")
 		if !result {
