@@ -115,19 +115,6 @@ func (g *Group) candidatesForDownscale() []scaler.Server {
 	return candidates
 }
 
-//func (g *Group) unusableServers() []scaler.Server {
-//unusable := make([]scaler.Server, 0)
-
-//for _, s := range g.ScalingServers {
-//state := s.Instance.State
-//if state != "running" && state != "stopped" {
-//unusable = append(unusable, s)
-//}
-//}
-
-//return unusable
-//}
-
 func (g *Group) ScalingStrategy() string {
 	return g.Strategy
 }
