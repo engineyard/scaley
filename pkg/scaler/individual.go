@@ -16,13 +16,7 @@ func newIndividual(group scalable, api core.Client) *individual {
 }
 
 func (scaler *individual) Upscale() error {
-	candidates := scaler.group.Candidates("up")
-
-	if len(candidates) == 0 {
-		return fmt.Errorf("There are no servers in the group avaiable for upscaling")
-	}
-
-	candidate := candidates[0]
+	candidate := scaler.group.Candidates("up")[0]
 
 	if err := startServer(candidate, scaler.api); err != nil {
 		return fmt.Errorf(upFail, candidate.AmazonID())
@@ -32,13 +26,7 @@ func (scaler *individual) Upscale() error {
 }
 
 func (scaler *individual) Downscale() error {
-	candidates := scaler.group.Candidates("down")
-
-	if len(candidates) == 0 {
-		return fmt.Errorf("There are no servers in the group avaiable for downscaling")
-	}
-
-	candidate := candidates[0]
+	candidate := scaler.group.Candidates("down")[0]
 
 	if err := stopServer(candidate, scaler.api, scaler.group.PreStop()); err != nil {
 		return fmt.Errorf(downFail, candidate.AmazonID())
