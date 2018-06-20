@@ -81,6 +81,24 @@ func (steps *Group) stubServer(id int, provisionedId string, state string) {
 	)
 }
 
+func (steps *Group) unstubServer(id int, provisionedId string) {
+	steps.api.RemoveResponse(
+		"get",
+		fmt.Sprintf("/servers?page=1&per_page=100&provisioned_id=%s", provisionedId),
+	)
+
+	steps.api.RemoveResponse(
+		"get",
+		fmt.Sprintf("/servers?page=2&per_page=100&provisioned_id=%s", provisionedId),
+	)
+
+	steps.api.AddResponse(
+		"get",
+		fmt.Sprintf("/servers?page=1&per_page=100&provisioned_id=%s", provisionedId),
+		`{"servers" : []}`,
+	)
+}
+
 func (steps *Group) stubStart(id int, provisionedId string, success bool) {
 	method := "put"
 	path := fmt.Sprintf("/servers/%d/start", id)
@@ -170,6 +188,10 @@ func (steps *Group) StepUp(s kennel.Suite) {
 		}
 
 		return nil
+	})
+
+	s.Step(`^the scaling script for my group does not exist$`, func() error {
+		return common.Root.Remove(steps.scriptBase() + "decider")
 	})
 
 	s.Step(`^there is capacity for the group to upscale$`, func() error {
@@ -335,7 +357,6 @@ func (steps *Group) StepUp(s kennel.Suite) {
 
 		for _, id := range []string{"0", "1"} {
 			for _, path := range steps.api.Requests("put") {
-				fmt.Println("put req:", path)
 				if path == "/servers/"+id+"/start" {
 					found += 1
 				}
@@ -366,6 +387,26 @@ func (steps *Group) StepUp(s kennel.Suite) {
 		steps.model.StopScript = "stop_script_bad"
 
 		return steps.writeGroup()
+	})
+
+	s.Step(`^my group lacks a scaling script$`, func() error {
+		steps.model.ScalingScript = ""
+
+		return steps.writeGroup()
+	})
+
+	s.Step(`^my group has no scaling servers$`, func() error {
+		steps.model.ScalingServers = make([]*group.Server, 0)
+
+		return steps.writeGroup()
+	})
+
+	s.Step(`^my group has a scaling server that doesn't exist$`, func() error {
+		for i, server := range steps.model.ScalingServers {
+			steps.unstubServer(i, server.ID)
+		}
+
+		return nil
 	})
 
 	s.BeforeScenario(func(interface{}) {

@@ -11,14 +11,6 @@ import (
 type ScaleySteps struct{}
 
 func (steps *ScaleySteps) StepUp(s kennel.Suite) {
-	s.Step(`^I see some output$`, func() error {
-		output := jamaica.LastCommandStdout()
-
-		fmt.Println("output:", output)
-
-		return nil
-	})
-
 	s.Step(`^I see the help description$`, func() error {
 		output := jamaica.LastCommandStdout()
 
