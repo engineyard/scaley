@@ -49,10 +49,15 @@ func ByName(api core.Client, name string) (*Group, error) {
 		server.Instance = finders.FindServer(api, server.ID)
 	}
 
-	group.Environment = finders.EnvironmentForServer(
-		api,
-		group.ScalingServers[0].Instance,
-	)
+	for _, server := range group.ScalingServers {
+		if server.Instance != nil {
+			group.Environment = finders.EnvironmentForServer(
+				api,
+				group.ScalingServers[0].Instance,
+			)
+			break
+		}
+	}
 
 	return group, nil
 }

@@ -77,7 +77,7 @@ func downscale(group *Group, api core.Client) error {
 	// 2. Run chef on the environment
 	err = runChef(api, group.Environment)
 	if err != nil {
-		return fmt.Errorf("A Chef error occurred while upscaling the group. Please contact support.")
+		return fmt.Errorf("A Chef error occurred while downscaling the group. Please contact support.")
 	}
 
 	return nil

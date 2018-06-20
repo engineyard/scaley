@@ -43,8 +43,8 @@
 [[projects]]
   name = "github.com/ess/jamaica"
   packages = ["."]
-  revision = "2bd591868a3b409fdcb6c36931a641cae18a890b"
-  version = "v0.0.8"
+  revision = "cb904aab2b69f81615136a0f9c781395b553e21c"
+  version = "v1.0.2"
 
 [[projects]]
   name = "github.com/ess/kennel"
@@ -174,6 +174,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "06f1bec0e79a6f693e76a507b59e4e8d675e966a95e74abd8d0d154e61fc3297"
+  inputs-digest = "e3e527537e9b98c63ae82419827d2ee3115a5bc81b4296cefaf6dcb54dfec38f"
   solver-name = "gps-cdcl"
   solver-version = 1

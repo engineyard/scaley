@@ -47,7 +47,6 @@ func (workflow *ScalingAGroup) withLocking(currentGroup *group.Group, api core.C
 	desiredOp := group.ScalingScriptResult(currentGroup)
 
 	if desiredOp == "noop" {
-		fmt.Sprintf("Not scaling now")
 		return nil
 	}
 

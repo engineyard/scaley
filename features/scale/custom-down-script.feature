@@ -16,12 +16,14 @@ Feature: Custom Stop Script
     When I run `scaley scale mygroup`
     Then the group is scaled down
     But the stop script is not executed
+    And it exits successfully
 
   Scenario: With a custom stop script
     Given my group uses a custom stop script that always succeeds
     When I run `scaley scale mygroup`
     Then the stop script is executed for each target server
     And the group is scaled down
+    And it exits successfully
 
   Scenario: With a crashy custom stop script
     Given my group uses a custom stop script that fails for the first server
@@ -29,4 +31,5 @@ Feature: Custom Stop Script
     Then the stop script is executed for each target server
     But a stop script failure is logged for the first server
     And all applicable servers but the first server are stopped
+    And it exits with an error
 
