@@ -4,10 +4,14 @@ import (
 	"math/rand"
 	"testing"
 
+	"github.com/ess/testscope"
+
 	"github.com/engineyard/scaley/pkg/basher"
 )
 
 func TestScalingScriptResult(t *testing.T) {
+	testscope.SkipUnlessUnit(t)
+
 	g := &Group{ScalingScript: "dummy"}
 
 	status := 0
