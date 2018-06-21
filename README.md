@@ -57,9 +57,9 @@ When one runs `scaley scale groupname`, the "groupname" group is scaled via the 
 
 During each run, Scaley executes the Scaling Script associated with the Group and does the following based on the result of that run:
 
-    * If an upscale is desired, attempt to scale the group up with the group's desired strategy. Log any scaling errors as critical errors, and log a lack of capacity in the group as a warning.
-    * If a downscale is desired, attempt to scale the group down with the group's desired strategy (and optional stop script). Log any scaling errors as critical errors.
-    * If no change is desired, do not attempt to scale the group.
+* If an upscale is desired, attempt to scale the group up with the group's desired strategy. Log any scaling errors as critical errors, and log a lack of capacity in the group as a warning.
+* If a downscale is desired, attempt to scale the group down with the group's desired strategy (and optional stop script). Log any scaling errors as critical errors.
+* If no change is desired, do not attempt to scale the group.
 
 # History #
 
