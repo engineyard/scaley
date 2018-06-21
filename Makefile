@@ -19,7 +19,7 @@ LDFLAGS=-ldflags "-w -s \
 all: clean build
 
 # Build a new release
-release: distclean distbuild linux darwin windows freebsd
+release: distclean distbuild linux
 
 # Builds the project
 build:
