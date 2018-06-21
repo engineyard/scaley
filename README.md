@@ -47,6 +47,8 @@ scaling_servers:
   - id: i-00000003
 ```
 
+It's important to note here that Scaley does not provision/deprovision instances, but rather starts/stops instances that already exist. To that end, you'll need to create the instances that are added in the `scaling_servers:` list before you can really use Scaley.
+
 ## Usage ##
 
 At present, there is only a single `scaley` command available: `scaley scale`. This command requires that one also pass the name of the group to be scaled. To automate the scaler, it's best to set up a simple cron job to periodically run `scaley scale` for the group that you wish to autoscale.
