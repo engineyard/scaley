@@ -14,7 +14,7 @@ We are working on cookbooks for both v4 and v5 of the Engine Yard stack to handl
 * ***Scaling Server***: A server that is part of the group and is a candidate for state changes during a Scaling Event
 * ***Scaling Script***: An external script that determines if the Group should be scaled up or down at any given time, reflected by its return code (1 = down, 2 = up, all else = no change)
 * ***Scaling Event***: An attempt to scale the Group up or down, locking the group for all other operations until complete
-* ***Stop Script ***: An external script that, given the IP of a server that is about to be stopped, takes care of shutdown procedures for services on that server that are not handled gracefully during a power cut. Examples of note are things like Sidekiq workers, Resque workers, etc.
+* ***Stop Script***: An external script that, given the IP of a server that is about to be stopped, takes care of shutdown procedures for services on that server that are not handled gracefully during a power cut. Examples of note are things like Sidekiq workers, Resque workers, etc.
 * ***Strategy***: The manner in which the Group is to be scaled. Both Individual and Legion are currently implemented strategies, and the default strategy is Legion.
 
 ## Configuration ##
