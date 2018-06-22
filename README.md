@@ -1,6 +1,6 @@
 Scaley is a custom autoscaling solution for Engine Yard Cloud environments.
 
-
+As opposed to traditional scaling approaches that work by provisioning/terminating servers, it works by managing the state of groups of servers that already exist.
 
 ## Installation ##
 
