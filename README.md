@@ -1,5 +1,7 @@
 Scaley is a custom autoscaling solution for Engine Yard Cloud environments.
 
+
+
 ## Installation ##
 
 For manual installation, the best bet is to grab the latest release from [the releases page](https://github.com/engineyard/scaley/releases), then place it in a location within the PATH on the server on which you want to run it.
@@ -9,13 +11,14 @@ We are working on cookbooks for both v4 and v5 of the Engine Yard stack to handl
 ## Glossary ##
 
 * ***Group***: A representation of an autoscaling group; made up of Scaling Servers, a Scaling Script, a Strategy, and an optional Stop Script
-* ***Individual***: A Strategy that dictates that only a single Scaling Server is to be scaled during a given Scaling Event
-* ***Legion***: A Strategy that dictates that all Scaling Servers in the Group are to be scaled in the same direction during a given Scaling Event
 * ***Scaling Server***: A server that is part of the Group and is a candidate for state changes during a Scaling Event
 * ***Scaling Script***: An external script that determines if the Group should be scaled up or down at any given time, reflected by its return code (1 = down, 2 = up, all else = no change)
 * ***Scaling Event***: An attempt to scale the Group up or down, locking the group for all other operations until complete
 * ***Stop Script***: An external script that, given the IP of a server that is about to be stopped, takes care of shutdown procedures for services on that server that are not handled gracefully during a power cut. Examples of note are things like Sidekiq workers, Resque workers, etc.
 * ***Strategy***: The manner in which a Group is scaled. Both Individual and Legion are currently implemented strategies, and the default strategy is Legion.
+  * ***Individual***: A Strategy that dictates that only a single Scaling Server is to be scaled during a given Scaling Event
+  * ***Legion***: A Strategy that dictates that all Scaling Servers in the Group are to be scaled in the same direction during a given Scaling Event
+
 
 ## Configuration ##
 
