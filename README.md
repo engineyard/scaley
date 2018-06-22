@@ -4,6 +4,8 @@ As opposed to traditional scaling approaches that work by provisioning/terminati
 
 ## Installation ##
 
+***NOTE: The following is valid, but your best bet at the moment, honestly, is to [submit a support request](https://support.engineyard.com/hc/en-us/requests/new) to ask that we help you with this effort.***
+
 For manual installation, the best bet is to grab the latest release from [the releases page](https://github.com/engineyard/scaley/releases), then place it in a location within the PATH on the server on which you want to run it.
 
 We are working on cookbooks for both v4 and v5 of the Engine Yard stack to handle installation and configuration, and you can read more about that [here](https://github.com/engineyard/scaley/wiki/Cookbooks).
