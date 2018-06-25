@@ -2,8 +2,35 @@
 
 
 [[projects]]
+  name = "github.com/DATA-DOG/godog"
+  packages = [
+    ".",
+    "colors",
+    "gherkin"
+  ]
+  revision = "0371765570d36374bef4ab9f62ed0491f0862a3c"
+  version = "v0.7.6"
+
+[[projects]]
   name = "github.com/engineyard/eycore"
-  packages = [".","accounts","addresses","client","client/mockdata","core","debugging","environments","flavors","locations","logger","paging","providers","requests","servers","users"]
+  packages = [
+    ".",
+    "accounts",
+    "addresses",
+    "client",
+    "client/mockdata",
+    "core",
+    "debugging",
+    "environments",
+    "flavors",
+    "locations",
+    "logger",
+    "paging",
+    "providers",
+    "requests",
+    "servers",
+    "users"
+  ]
   revision = "8c9f0f54a6b0dffccb62d96ac4379460c753a0a4"
   version = "v0.3.4"
 
@@ -14,16 +41,25 @@
   revision = "31e52d811bda0008c9c751d144e6aa7d2013c5cd"
 
 [[projects]]
-  name = "github.com/ess/mockable"
-  packages = [".","core"]
-  revision = "3f051ad96b0975dbe70b2b3c6bfd58ff09e02e43"
-  version = "v0.2.0"
+  name = "github.com/ess/jamaica"
+  packages = ["."]
+  revision = "cb904aab2b69f81615136a0f9c781395b553e21c"
+  version = "v1.0.2"
 
 [[projects]]
-  name = "github.com/ess/spawning"
+  name = "github.com/ess/kennel"
   packages = ["."]
-  revision = "bd7c914df86d361fe2fc99772b4818b3e99370af"
-  version = "v0.1.1"
+  revision = "e18fdabd2a98463f443a8a44466879da0b8da599"
+  version = "v0.0.3"
+
+[[projects]]
+  name = "github.com/ess/mockable"
+  packages = [
+    ".",
+    "core"
+  ]
+  revision = "3f051ad96b0975dbe70b2b3c6bfd58ff09e02e43"
+  version = "v0.2.0"
 
 [[projects]]
   name = "github.com/fsnotify/fsnotify"
@@ -34,7 +70,17 @@
 [[projects]]
   branch = "master"
   name = "github.com/hashicorp/hcl"
-  packages = [".","hcl/ast","hcl/parser","hcl/scanner","hcl/strconv","hcl/token","json/parser","json/scanner","json/token"]
+  packages = [
+    ".",
+    "hcl/ast",
+    "hcl/parser",
+    "hcl/scanner",
+    "hcl/strconv",
+    "hcl/token",
+    "json/parser",
+    "json/scanner",
+    "json/token"
+  ]
   revision = "23c074d0eceb2b8a5bfdbb271ab780cde70f05a8"
 
 [[projects]]
@@ -63,9 +109,12 @@
 
 [[projects]]
   name = "github.com/spf13/afero"
-  packages = [".","mem"]
-  revision = "bb8f1927f2a9d3ab41c9340aa034f6b803f4359c"
-  version = "v1.0.2"
+  packages = [
+    ".",
+    "mem"
+  ]
+  revision = "63644898a8da0bc22138abf860edaf5277b6102e"
+  version = "v1.1.0"
 
 [[projects]]
   name = "github.com/spf13/cast"
@@ -106,7 +155,14 @@
 [[projects]]
   branch = "master"
   name = "golang.org/x/text"
-  packages = ["internal/gen","internal/triegen","internal/ucd","transform","unicode/cldr","unicode/norm"]
+  packages = [
+    "internal/gen",
+    "internal/triegen",
+    "internal/ucd",
+    "transform",
+    "unicode/cldr",
+    "unicode/norm"
+  ]
   revision = "4e4a3210bb54bb31f6ab2cdca2edcc0b50c420c1"
 
 [[projects]]
@@ -118,6 +174,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "a4b9ff2607869d4915748bf6777d0b0c236e80bc8dd53e207746dad77d489a59"
+  inputs-digest = "e3e527537e9b98c63ae82419827d2ee3115a5bc81b4296cefaf6dcb54dfec38f"
   solver-name = "gps-cdcl"
   solver-version = 1
