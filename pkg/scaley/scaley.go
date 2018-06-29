@@ -17,12 +17,12 @@ type Server struct {
 	ID            int
 	ProvisionedID string
 	State         int
-	EnvironmentID int
+	EnvironmentID string
 }
 
 // Environment is a representation of an environment on the Engine Yard Platform
 type Environment struct {
-	ID   int
+	ID   string
 	Name string
 }
 
@@ -44,7 +44,7 @@ type ServerService interface {
 
 // EnvironmentService provides retrieval functionality for environments
 type EnvironmentService interface {
-	Get(int) (Environment, error)
+	Get(string) (Environment, error)
 }
 
 // OpsService provides low-level functionality related to scaling groups.

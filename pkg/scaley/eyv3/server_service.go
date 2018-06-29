@@ -1,11 +1,10 @@
 package eyv3
 
 import (
+	"fmt"
 	"net/url"
-	"strconv"
 	"strings"
 
-	"github.com/engineyard/eycore"
 	"github.com/engineyard/eycore/core"
 	"github.com/engineyard/eycore/servers"
 
@@ -16,12 +15,12 @@ type ServerService struct {
 	Driver core.Client
 }
 
-func NewServerService(host string, token string) *ServerService {
-	return &ServerService{Driver: eycore.NewClient(host, token)}
+func NewServerService(driver core.Client) *ServerService {
+	return &ServerService{Driver: driver}
 }
 
 func (service *ServerService) Get(provisionedID string) (scaley.Server, error) {
-	params = url.Values{}
+	params := url.Values{}
 	params.Set("provisioned_id", provisionedID)
 
 	collection := servers.All(service.Driver, params)
@@ -30,14 +29,16 @@ func (service *ServerService) Get(provisionedID string) (scaley.Server, error) {
 		return scaley.Server{ProvisionedID: provisionedID}, fmt.Errorf("not found")
 	}
 
-	server := collection[0]
+	model := collection[0]
 
-	return scaley.Server{
-		ID:            server.ID,
-		ProvisionedID: server.ProvisionedID,
-		State:         service.state(server),
-		EnvironmentID: service.environmentID(server),
+	server := scaley.Server{
+		ID:            model.ID,
+		ProvisionedID: model.ProvisionedID,
+		State:         service.state(model),
+		EnvironmentID: service.environmentID(model),
 	}
+
+	return server, nil
 }
 
 func (service *ServerService) state(server *servers.Model) int {
@@ -53,11 +54,8 @@ func (service *ServerService) state(server *servers.Model) int {
 	return state
 }
 
-func (service *ServerService) environmentID(server *servers.Model) int {
-	id := 0
-
+func (service *ServerService) environmentID(server *servers.Model) string {
 	parts := strings.Split(server.EnvironmentURI, "/")
-	id = strconv.Atoi(parts[len(parts)-1])
 
-	return id
+	return parts[len(parts)-1]
 }

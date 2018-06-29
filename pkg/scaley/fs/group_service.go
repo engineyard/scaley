@@ -3,6 +3,8 @@ package fs
 import (
 	"fmt"
 
+	"gopkg.in/yaml.v2"
+
 	"github.com/engineyard/scaley/pkg/scaley"
 )
 
@@ -64,14 +66,16 @@ func (service *GroupService) Get(name string) (scaley.Group, error) {
 		return group, fmt.Errorf("could not find an associated environment")
 	}
 
-	return Group{
+	group = scaley.Group{
 		Name:          name,
 		Servers:       servers,
 		ScalingScript: wrapped.ScalingScript,
 		StopScript:    wrapped.StopScript,
-		Strategy:      wrapped.Stategy,
+		Strategy:      wrapped.Strategy,
 		Environment:   environment,
 	}
+
+	return group, nil
 }
 
 func (service *GroupService) servers(ids []string) []scaley.Server {
@@ -90,7 +94,7 @@ func (service *GroupService) environment(servers []scaley.Server) (scaley.Enviro
 
 	for _, server := range servers {
 		if found, err := service.EnvironmentService.Get(server.EnvironmentID); err == nil {
-			return found
+			return found, nil
 		}
 	}
 
