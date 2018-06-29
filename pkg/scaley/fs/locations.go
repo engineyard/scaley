@@ -25,20 +25,20 @@ const (
 	state  = "/var/run/scaley"
 )
 
+// GroupConfigs returns the absolute path to the scaley group configuration
+// directory after ensuring that the directory exists on Root
 func GroupConfigs() string {
 	path := fmt.Sprintf("%s/groups", configDir())
 	CreateDir(path)
 	return path
 }
 
+// Locks returns the absolute path to the scaley locks directory after ensuring
+// that the directory exists on Root
 func Locks() string {
 	path := fmt.Sprintf("%s/lock", stateDir())
 	CreateDir(path)
 	return path
-}
-
-func DataDir() string {
-	return dataDir()
 }
 
 func stateDir() string {
@@ -53,12 +53,8 @@ func configDir() string {
 	return path
 }
 
-func dataDir() string {
-	path := data
-	CreateDir(path)
-	return path
-}
-
+// CreateDir creates all elements of the given directory path on Root. If there
+// are errors along the way, the program terminates via non-panic means.
 var CreateDir = func(path string) {
 	if !FileExists(path) {
 		err := Root.MkdirAll(path, 0644)
@@ -69,6 +65,8 @@ var CreateDir = func(path string) {
 	}
 }
 
+// FileExists checks for the existence of the given path on Root. If the path
+// exists, it returns true. Otherwise, it returns false.
 func FileExists(path string) bool {
 	_, err := Root.Stat(path)
 

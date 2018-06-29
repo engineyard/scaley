@@ -4,20 +4,26 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/engineyard/eycore/core"
 	"github.com/engineyard/eycore/environments"
 
 	"github.com/engineyard/scaley/pkg/scaley"
 )
 
+// EnvironmentService provides the functionality for retrieving environment data
+// from the Engine Yard Core-v3 API.
 type EnvironmentService struct {
-	Driver core.Client
+	Driver Reader
 }
 
-func NewEnvironmentService(driver core.Client) *EnvironmentService {
+// NewEnvironmentService instantiates a new EnvironmentService with the given
+// API reader
+func NewEnvironmentService(driver Reader) *EnvironmentService {
 	return &EnvironmentService{Driver: driver}
 }
 
+// Get retrieves the specified environment from the upstream API. If there are
+// errors along the way, an error is returned. Otherwise, a scaley Environment
+// is returned.
 func (service *EnvironmentService) Get(ID string) (scaley.Environment, error) {
 	data, err := service.Driver.Get("environments/"+ID, nil)
 	if err != nil {

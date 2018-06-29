@@ -11,14 +11,20 @@ import (
 	"github.com/engineyard/scaley/pkg/scaley"
 )
 
+// ServerService provides the functionality for retrieving server data
+// from the Engine Yard Core-v3 API.
 type ServerService struct {
-	Driver core.Client
+	Driver Reader
 }
 
-func NewServerService(driver core.Client) *ServerService {
+// NewServerService instantiates a new ServerService with the given reader.
+func NewServerService(driver Reader) *ServerService {
 	return &ServerService{Driver: driver}
 }
 
+// Get retrieves the specified server from the upstream API. If there are any
+// errors along the way, an error is returned. Otherwise, a proper scaley
+// server is returned.
 func (service *ServerService) Get(provisionedID string) (scaley.Server, error) {
 	params := url.Values{}
 	params.Set("provisioned_id", provisionedID)
