@@ -5,7 +5,6 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/engineyard/eycore/core"
 	"github.com/engineyard/eycore/servers"
 
 	"github.com/engineyard/scaley/pkg/scaley"
@@ -14,11 +13,11 @@ import (
 // ServerService provides the functionality for retrieving server data
 // from the Engine Yard Core-v3 API.
 type ServerService struct {
-	Driver Reader
+	Driver Client
 }
 
 // NewServerService instantiates a new ServerService with the given reader.
-func NewServerService(driver Reader) *ServerService {
+func NewServerService(driver Client) *ServerService {
 	return &ServerService{Driver: driver}
 }
 
@@ -52,9 +51,11 @@ func (service *ServerService) state(server *servers.Model) int {
 
 	switch server.State {
 	case "stopped":
-		state = 1
+		state = scaley.Stopped
 	case "running":
-		state = 2
+		state = scaley.Running
+	default:
+		state = scaley.Unknown
 	}
 
 	return state
@@ -65,3 +66,17 @@ func (service *ServerService) environmentID(server *servers.Model) string {
 
 	return parts[len(parts)-1]
 }
+
+// Copyright © 2018 Engine Yard, Inc.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
