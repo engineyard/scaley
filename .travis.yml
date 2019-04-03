@@ -14,7 +14,7 @@ go:
   #- dep ensure
 
 install:
-  - go get ./...
+  - env GO111MODULE=on go get ./...
 
 script:
-  - make test
+  - env GO111MODULE=on make test
