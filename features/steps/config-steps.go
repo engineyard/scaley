@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/afero"
 	"github.com/spf13/viper"
 
-	"github.com/engineyard/scaley/pkg/common"
+	"github.com/engineyard/scaley/pkg/scaley/fs"
 )
 
 type Config struct{}
@@ -17,13 +17,13 @@ func (steps *Config) writeConfig() error {
 token: supersekrat
 reporting_url: "https://example.com/reporting/1234"`
 
-	err := common.Root.MkdirAll("/etc/scaley", 0755)
+	err := fs.Root.MkdirAll("/etc/scaley", 0755)
 	if err != nil {
 		return fmt.Errorf("Could not create scaley config")
 	}
 
 	err = afero.WriteFile(
-		common.Root,
+		fs.Root,
 		"/etc/scaley/config.yml",
 		[]byte(config),
 		0644,
@@ -42,8 +42,8 @@ func (steps *Config) StepUp(s kennel.Suite) {
 	})
 
 	s.BeforeScenario(func(interface{}) {
-		common.Root = afero.NewMemMapFs()
-		viper.SetFs(common.Root)
+		fs.Root = afero.NewMemMapFs()
+		viper.SetFs(fs.Root)
 	})
 }
 

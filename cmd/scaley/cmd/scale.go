@@ -18,8 +18,12 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 
-	"github.com/engineyard/scaley/pkg/workflows"
+	"github.com/engineyard/scaley/pkg/scaley"
+	"github.com/engineyard/scaley/pkg/scaley/bash"
+	"github.com/engineyard/scaley/pkg/scaley/eycore"
+	"github.com/engineyard/scaley/pkg/scaley/fs"
 )
 
 var scaleCmd = &cobra.Command{
@@ -38,14 +42,40 @@ proper direction.`,
 			return fmt.Errorf("Usage: scaley scale groupname")
 		}
 
+		reportingURL = viper.GetString("reporting_url")
+		if len(reportingURL) == 0 {
+			return fmt.Errorf(
+				`You must provide a reporting URL.
+				
+This should be listed as reporting_url: in /etc/scaley/config.yml`,
+			)
+		}
+
+		token = viper.GetString("token")
+		if len(token) == 0 {
+			return fmt.Errorf(
+				`This operation requires Engine Yard API authentication.
+				
+This should be listed as token: in /etc/scaley/config.yml`,
+			)
+		}
+
+		api = viper.GetString("api")
+		if api == "" {
+			api = "https://api.engineyard.com"
+		}
+
 		return nil
 	},
 
 	RunE: func(cmd *cobra.Command, args []string) error {
-		return workflows.Perform(
-			&workflows.ScalingAGroup{
-				GroupName: args[0],
-			},
+		return scaley.Finalize(
+			scaley.Scale().Call(
+				&scaley.ScalingEvent{
+					GroupName: args[0],
+					Services:  services(),
+				},
+			),
 		)
 	},
 
@@ -56,3 +86,19 @@ proper direction.`,
 func init() {
 	RootCmd.AddCommand(scaleCmd)
 }
+
+var services = func() *scaley.Services {
+	eycore.Setup(api, token)
+
+	return &scaley.Services{
+		Groups:       fs.NewGroupService(),
+		Servers:      eycore.NewServerService(),
+		Environments: eycore.NewEnvironmentService(),
+		Locker:       fs.NewLockService(),
+		Runner:       bash.NewExecService(),
+	}
+}
+
+var api string
+var reportingURL string
+var token string

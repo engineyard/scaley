@@ -6,28 +6,28 @@ import (
 	"github.com/ess/kennel"
 	"github.com/spf13/afero"
 
-	"github.com/engineyard/scaley/pkg/common"
+	"github.com/engineyard/scaley/pkg/scaley/fs"
 )
 
 type Locking struct{}
 
 func (steps *Locking) StepUp(s kennel.Suite) {
 	s.Step(`^a scaling lockfile exists for the group$`, func() error {
-		err := common.Root.MkdirAll(common.Locks(), 0755)
+		err := fs.Root.MkdirAll(fs.Locks(), 0755)
 		if err != nil {
 			return fmt.Errorf("Could not create scaley lock dir")
 		}
 
 		return afero.WriteFile(
-			common.Root,
-			common.Locks()+"/mygroup",
+			fs.Root,
+			fs.Locks()+"/mygroup",
 			[]byte(""),
 			0644,
 		)
 	})
 
 	s.Step(`^the group remains locked$`, func() error {
-		if !common.FileExists(common.Locks() + "/mygroup") {
+		if !fs.FileExists(fs.Locks() + "/mygroup") {
 			return fmt.Errorf("There is no lockfile for the group")
 		}
 

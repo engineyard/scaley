@@ -4,21 +4,19 @@ import (
 	"fmt"
 	//"io/ioutil"
 
-	"github.com/engineyard/eycore"
-	"github.com/engineyard/eycore/core"
-	//"github.com/engineyard/eycore/servers"
-	"github.com/ess/fakey"
+	"github.com/ess/eygo"
 	"github.com/ess/kennel"
 	"github.com/spf13/afero"
 	"gopkg.in/yaml.v2"
 
-	"github.com/engineyard/scaley/pkg/common"
-	"github.com/engineyard/scaley/pkg/group"
+	"github.com/engineyard/scaley/pkg/scaley"
+	"github.com/engineyard/scaley/pkg/scaley/eycore"
+	"github.com/engineyard/scaley/pkg/scaley/fs"
 )
 
 type Group struct {
-	model *group.Group
-	api   *fakey.Client
+	model *scaley.Group
+	api   *eygo.MockDriver
 }
 
 func (steps *Group) showReqs() {
@@ -35,13 +33,13 @@ func (steps *Group) writeGroup() error {
 		return err
 	}
 
-	err = common.Root.MkdirAll("/etc/scaley/groups", 0755)
+	err = fs.Root.MkdirAll("/etc/scaley/groups", 0755)
 	if err != nil {
 		return fmt.Errorf("Could not create scaley config")
 	}
 
 	return afero.WriteFile(
-		common.Root,
+		fs.Root,
 		"/etc/scaley/groups/"+steps.model.Name+".yml",
 		data,
 		0644,
@@ -57,13 +55,13 @@ func (steps *Group) stubEnvironment() {
 	steps.api.AddResponse(
 		"get",
 		"/environments?id=1&page=1&per_page=100",
-		`{"environments": [{"id" : 1}]}`,
+		steps.constructResponse(`{"environments": [{"id" : 1}]}`, nil),
 	)
 
 	steps.api.AddResponse(
 		"get",
 		"/environments&?id=1&page=2&per_page=100",
-		`{"environments": []}`,
+		steps.constructResponse(`{"environments": []}`, nil),
 	)
 }
 
@@ -71,13 +69,13 @@ func (steps *Group) stubServer(id int, provisionedId string, state string) {
 	steps.api.AddResponse(
 		"get",
 		fmt.Sprintf("/servers?page=1&per_page=100&provisioned_id=%s", provisionedId),
-		fmt.Sprintf(`{"servers" : [{"id" : %d, "provisioned_id" : "%s", "state" : "%s", "private_hostname": "server%d", "environment": "/1"}]}`, id, provisionedId, state, id),
+		steps.constructResponse(fmt.Sprintf(`{"servers" : [{"id" : %d, "provisioned_id" : "%s", "state" : "%s", "private_hostname": "server%d", "environment": "/1"}]}`, id, provisionedId, state, id), nil),
 	)
 
 	steps.api.AddResponse(
 		"get",
 		fmt.Sprintf("/servers?page=2&per_page=100&provisioned_id=%s", provisionedId),
-		`{"servers" : []}`,
+		steps.constructResponse(`{"servers" : []}`, nil),
 	)
 }
 
@@ -95,8 +93,15 @@ func (steps *Group) unstubServer(id int, provisionedId string) {
 	steps.api.AddResponse(
 		"get",
 		fmt.Sprintf("/servers?page=1&per_page=100&provisioned_id=%s", provisionedId),
-		`{"servers" : []}`,
+		steps.constructResponse(`{"servers" : []}`, nil),
 	)
+}
+
+func (steps *Group) constructResponse(data string, err error) eygo.Response {
+	return eygo.Response{
+		Pages: [][]byte{[]byte(data)},
+		Error: err,
+	}
 }
 
 func (steps *Group) stubStart(id int, provisionedId string, success bool) {
@@ -105,7 +110,7 @@ func (steps *Group) stubStart(id int, provisionedId string, success bool) {
 	response := fmt.Sprintf(`{"request" : {"type" : "start_server", "id" : "%s", "finished_at" : "2018-05-14T00:00:00+00:00", "successful" : %t}}`, provisionedId, success)
 
 	steps.api.RemoveResponse(method, path)
-	steps.api.AddResponse(method, path, response)
+	steps.api.AddResponse(method, path, steps.constructResponse(response, nil))
 }
 
 func (steps *Group) stubStop(id int, provisionedId string, success bool) {
@@ -114,7 +119,7 @@ func (steps *Group) stubStop(id int, provisionedId string, success bool) {
 	response := fmt.Sprintf(`{"request" : {"type" : "stop_server", "id" : "%s", "finished_at" : "2018-05-14T00:00:00+00:00", "successful" : %t}}`, provisionedId, success)
 
 	steps.api.RemoveResponse(method, path)
-	steps.api.AddResponse(method, path, response)
+	steps.api.AddResponse(method, path, steps.constructResponse(response, nil))
 }
 
 func (steps *Group) stubChef(success bool) {
@@ -123,7 +128,7 @@ func (steps *Group) stubChef(success bool) {
 	response := fmt.Sprintf(`{"request" : {"type" : "configure_environment", "id" : "lolchefrun", "finished_at" : "finished", "successful" : %t}}`, success)
 
 	steps.api.RemoveResponse(method, path)
-	steps.api.AddResponse(method, path, response)
+	steps.api.AddResponse(method, path, steps.constructResponse(response, nil))
 }
 
 func (steps *Group) serversStarted() []string {
@@ -176,12 +181,12 @@ func (steps *Group) StepUp(s kennel.Suite) {
 	s.Step(`^I have a script that determines if I should scale up or down$`, func() error {
 
 		// Create a dummy scripts location in the fake FS
-		err := common.Root.MkdirAll(steps.scriptBase(), 0755)
+		err := fs.Root.MkdirAll(steps.scriptBase(), 0755)
 		if err != nil {
 			return err
 		}
 
-		err = afero.WriteFile(common.Root, steps.scriptBase()+"decider", []byte(""), 0755)
+		err = afero.WriteFile(fs.Root, steps.scriptBase()+"decider", []byte(""), 0755)
 
 		if err != nil {
 			return fmt.Errorf("Could not write scaling script")
@@ -191,15 +196,15 @@ func (steps *Group) StepUp(s kennel.Suite) {
 	})
 
 	s.Step(`^the scaling script for my group does not exist$`, func() error {
-		return common.Root.Remove(steps.scriptBase() + "decider")
+		return fs.Root.Remove(steps.scriptBase() + "decider")
 	})
 
 	s.Step(`^there is capacity for the group to upscale$`, func() error {
 		steps.stubEnvironment()
 
 		for i, server := range steps.model.ScalingServers {
-			steps.stubServer(i, server.ID, "stopped")
-			steps.stubStart(i, server.ID, true)
+			steps.stubServer(i, server, "stopped")
+			steps.stubStart(i, server, true)
 		}
 
 		steps.stubChef(true)
@@ -229,7 +234,7 @@ func (steps *Group) StepUp(s kennel.Suite) {
 
 	s.Step(`^the servers cannot be started successfully$`, func() error {
 		for i, server := range steps.model.ScalingServers {
-			steps.stubStart(i, server.ID, false)
+			steps.stubStart(i, server, false)
 		}
 
 		return nil
@@ -237,7 +242,7 @@ func (steps *Group) StepUp(s kennel.Suite) {
 
 	s.Step(`^the servers cannot be stopped successfully$`, func() error {
 		for i, server := range steps.model.ScalingServers {
-			steps.stubStop(i, server.ID, false)
+			steps.stubStop(i, server, false)
 		}
 
 		return nil
@@ -259,8 +264,8 @@ func (steps *Group) StepUp(s kennel.Suite) {
 		steps.stubEnvironment()
 
 		for i, server := range steps.model.ScalingServers {
-			steps.stubServer(i, server.ID, "running")
-			steps.stubStop(i, server.ID, true)
+			steps.stubServer(i, server, "running")
+			steps.stubStop(i, server, true)
 		}
 
 		steps.stubChef(true)
@@ -336,7 +341,7 @@ func (steps *Group) StepUp(s kennel.Suite) {
 		steps.stubEnvironment()
 
 		for i, server := range steps.model.ScalingServers {
-			steps.stubServer(i, server.ID, "running")
+			steps.stubServer(i, server, "running")
 		}
 
 		return nil
@@ -346,7 +351,7 @@ func (steps *Group) StepUp(s kennel.Suite) {
 		steps.stubEnvironment()
 
 		for i, server := range steps.model.ScalingServers {
-			steps.stubServer(i, server.ID, "stopped")
+			steps.stubServer(i, server, "stopped")
 		}
 
 		return nil
@@ -396,14 +401,14 @@ func (steps *Group) StepUp(s kennel.Suite) {
 	})
 
 	s.Step(`^my group has no scaling servers$`, func() error {
-		steps.model.ScalingServers = make([]*group.Server, 0)
+		steps.model.ScalingServers = make([]string, 0)
 
 		return steps.writeGroup()
 	})
 
 	s.Step(`^my group has a scaling server that doesn't exist$`, func() error {
 		for i, server := range steps.model.ScalingServers {
-			steps.unstubServer(i, server.ID)
+			steps.unstubServer(i, server)
 		}
 
 		return nil
@@ -411,12 +416,10 @@ func (steps *Group) StepUp(s kennel.Suite) {
 
 	s.BeforeScenario(func(interface{}) {
 		stubBasher(0)
-		steps.api = &fakey.Client{}
-		steps.api.AddResponse("get", "/users/current", `{"user": {}}`)
+		steps.api = eygo.NewMockDriver()
+		steps.api.AddResponse("get", "/users/current", steps.constructResponse(`{"user": {}}`, nil))
 
-		eycore.NewClient = func(host string, token string) core.Client {
-			return steps.api
-		}
+		eycore.Driver = steps.api
 	})
 }
 

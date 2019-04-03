@@ -4,22 +4,22 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/engineyard/scaley/pkg/basher"
-	"github.com/engineyard/scaley/pkg/group"
+	"github.com/engineyard/scaley/pkg/scaley"
+	"github.com/engineyard/scaley/pkg/scaley/bash"
 )
 
-var mygroup *group.Group
+var mygroup *scaley.Group
 
-func generateGroup(strategy string) *group.Group {
+func generateGroup(strategy string) *scaley.Group {
 	if len(strategy) == 0 {
 		strategy = "legion"
 	}
 
-	mygroup = &group.Group{
+	mygroup = &scaley.Group{
 		Name: "mygroup",
-		ScalingServers: []*group.Server{
-			&group.Server{ID: "i-00000001"},
-			&group.Server{ID: "i-00000002"},
+		ScalingServers: []string{
+			"i-00000001",
+			"i-00000002",
 		},
 		ScalingScript: "/bin/decider",
 		Strategy:      strategy,
@@ -29,7 +29,7 @@ func generateGroup(strategy string) *group.Group {
 }
 
 func stubBasher(direction int) {
-	basher.Run = func(command string) int {
+	bash.Run = func(command string) int {
 		if command == "/bin/decider" {
 			return direction
 		}

@@ -56,7 +56,7 @@ func (steps *DownScript) StepUp(s kennel.Suite) {
 			return fmt.Errorf("No failure generated")
 		}
 
-		if !strings.Contains(found, mygroup.ScalingServers[0].ID) {
+		if !strings.Contains(found, mygroup.ScalingServers[0]) {
 			return fmt.Errorf("First server not listed in failure")
 		}
 
