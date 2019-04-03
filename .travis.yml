@@ -13,5 +13,8 @@ go:
 #install:
   #- dep ensure
 
+install:
+  - go get ./...
+
 script:
   - make test
