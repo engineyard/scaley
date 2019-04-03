@@ -24,6 +24,7 @@ import (
 	"github.com/engineyard/scaley/pkg/scaley/bash"
 	"github.com/engineyard/scaley/pkg/scaley/eycore"
 	"github.com/engineyard/scaley/pkg/scaley/fs"
+	"github.com/engineyard/scaley/pkg/scaley/http"
 )
 
 var scaleCmd = &cobra.Command{
@@ -94,8 +95,10 @@ var services = func() *scaley.Services {
 		Groups:       fs.NewGroupService(),
 		Servers:      eycore.NewServerService(),
 		Environments: eycore.NewEnvironmentService(),
+		Scripts:      fs.NewScalingScriptService(),
 		Locker:       fs.NewLockService(),
 		Runner:       bash.NewExecService(),
+		Log:          http.NewLogService(reportingURL),
 	}
 }
 

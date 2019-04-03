@@ -18,12 +18,6 @@ func finalizeFailure(result dry.Result) error {
 	event := eventify(result.Error())
 	err := event.Error
 
-	// handle invalid group
-	if invalidGroupDetected(err) {
-		// return the error without logging
-		return err
-	}
-
 	// handle no-op
 	if noOpDetected(err) {
 		// do nothing, and return no error
@@ -32,15 +26,9 @@ func finalizeFailure(result dry.Result) error {
 
 	// handle scaling failure
 
-	return errors.New("Unimplemented")
-}
+	// pass all other errors upstream
 
-func invalidGroupDetected(err error) bool {
-	_, c1 := err.(UnspecifiedScalingScript)
-	_, c2 := err.(MissingScalingScript)
-	_, c3 := err.(UnspecifiedScalingServers)
-
-	return c1 || c2 || c3
+	return err
 }
 
 func noOpDetected(err error) bool {

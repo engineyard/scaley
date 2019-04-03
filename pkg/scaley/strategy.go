@@ -20,7 +20,7 @@ const (
 	Individual
 )
 
-func CalculateStrategy(group Group) Strategy {
+func CalculateStrategy(group *Group) Strategy {
 	name := normalizedStrategyName(group.Strategy)
 
 	switch name {

@@ -1,6 +1,8 @@
 package scaley
 
 import (
+	"fmt"
+
 	"github.com/ess/dry"
 )
 
@@ -10,6 +12,7 @@ func Scale() *dry.Transaction {
 	return dry.NewTransaction(
 		loadGroup,
 		validateGroup,
+		lockGroup,
 		loadServers,
 		calculateDirection,
 		announceScalingStart,
@@ -22,7 +25,18 @@ func Scale() *dry.Transaction {
 func loadGroup(input dry.Value) dry.Result {
 	event := eventify(input)
 
-	return dry.Failure(event)
+	name := event.GroupName
+
+	group, err := event.Services.Groups.Get(name)
+	if err != nil {
+		event.Error = CannotLoadGroup{name, err}
+		return dry.Failure(event)
+	}
+
+	event.Group = group
+	event.Strategy = CalculateStrategy(group)
+
+	return dry.Success(event)
 }
 
 func validateGroup(input dry.Value) dry.Result {
@@ -39,6 +53,12 @@ func validateGroup(input dry.Value) dry.Result {
 
 	// verify that the scaling script exists
 
+	if !event.Services.Scripts.Exists(group.ScalingScript) {
+		event.Error = MissingScalingScript{group}
+
+		return dry.Failure(event)
+	}
+
 	// verify that the group contains scaling servers
 
 	if len(group.ScalingServers) < 1 {
@@ -51,25 +71,70 @@ func validateGroup(input dry.Value) dry.Result {
 	return dry.Success(event)
 }
 
+func lockGroup(input dry.Value) dry.Result {
+	event := eventify(input)
+	group := event.Group
+	locker := event.Services.Locker
+
+	if locker.Locked(group) {
+		event.Error = GroupIsLocked{group}
+
+		return dry.Failure(event)
+	}
+
+	if err := event.Services.Locker.Lock(group); err != nil {
+		event.Error = LockFailure{group}
+
+		return dry.Failure(event)
+	}
+
+	return dry.Success(event)
+}
+
 func loadServers(input dry.Value) dry.Result {
 	event := eventify(input)
+	group := event.Group
 
-	return dry.Failure(event)
+	event.Servers = make([]*Server, 0)
+
+	for _, id := range group.ScalingServers {
+		server, err := event.Services.Servers.Get(id)
+		if err != nil {
+			event.Error = InvalidScalingServer{group, id}
+
+			return dry.Failure(event)
+		}
+
+		event.Servers = append(event.Servers, server)
+	}
+
+	return dry.Success(event)
 }
 
 func calculateDirection(input dry.Value) dry.Result {
 	event := eventify(input)
+	script := event.Group.ScalingScript
 
-	// execute the scaling script, set the direction based on it.
-	// If the direction is no-op, fail
+	event.Direction = Direction(event.Services.Runner.Run(script))
 
-	return dry.Failure(event)
+	if event.Direction == None {
+		event.Error = NoChangeRequired{}
+
+		return dry.Failure(event)
+	}
+
+	return dry.Success(event)
 }
 
 func announceScalingStart(input dry.Value) dry.Result {
 	event := eventify(input)
 
-	return dry.Failure(event)
+	event.Services.Log.Info(
+		event.Group,
+		fmt.Sprintf("Scaling %s", event.Direction),
+	)
+
+	return dry.Success(event)
 }
 
 func calculateCandidates(input dry.Value) dry.Result {
@@ -95,8 +160,45 @@ func calculateCandidates(input dry.Value) dry.Result {
 
 func scaleCandidates(input dry.Value) dry.Result {
 	event := eventify(input)
+	toScale := make([]*Server, 0)
 
-	return dry.Failure(event)
+	var method func(*Server) error
+
+	switch event.Strategy {
+	case Individual:
+		toScale = append(toScale, event.Candidates[0])
+	default:
+		toScale = event.Candidates
+	}
+
+	switch event.Direction {
+	case Up:
+		method = event.Services.Servers.Start
+	default:
+		method = event.Services.Servers.Stop
+	}
+
+	for _, server := range toScale {
+		err := method(server)
+		if err != nil {
+			event.Failed = append(event.Failed, server)
+		} else {
+			event.Scaled = append(event.Scaled, server)
+		}
+	}
+
+	if len(event.Failed) > 0 {
+		event.Error = ScalingFailure{
+			event.Group,
+			event.Direction,
+			event.Scaled,
+			event.Failed,
+		}
+
+		return dry.Failure(event)
+	}
+
+	return dry.Success(event)
 }
 
 func configureEnvironment(input dry.Value) dry.Result {

@@ -6,8 +6,10 @@ type Services struct {
 	Groups       GroupService
 	Servers      ServerService
 	Environments EnvironmentService
+	Scripts      ScalingScriptService
 	Locker       LockService
 	Runner       ExecService
+	Log          LogService
 }
 
 // GroupService is an interface that describes an object that knows how to
@@ -43,4 +45,16 @@ type LockService interface {
 // execute external commands.
 type ExecService interface {
 	Run(string) int
+}
+
+// ScalingScriptService is an interface that describes an object that knows how
+// to interct with a ScalingScript.
+type ScalingScriptService interface {
+	Exists(string) bool
+}
+
+type LogService interface {
+	Info(*Group, string)
+	Failure(*Group, string)
+	Success(*Group, string)
 }

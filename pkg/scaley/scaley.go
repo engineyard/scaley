@@ -4,11 +4,11 @@ package scaley
 
 // Group is a representation of a scaling group.
 type Group struct {
-	Name           string
-	ScalingServers []string
-	ScalingScript  string
-	StopScript     string
-	Strategy       string
+	Name           string   `yaml:"name"`
+	ScalingServers []string `yaml:"scaling_servers"`
+	ScalingScript  string   `yaml:"scaling_script"`
+	StopScript     string   `yaml:"stop_script"`
+	Strategy       string   `yaml:"strategy"`
 }
 
 // Server is a representation of a server in an Engine Yard Cloud environment.

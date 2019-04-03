@@ -19,7 +19,7 @@ type UnspecifiedScalingScript struct {
 
 func (e UnspecifiedScalingScript) Error() string {
 	return fmt.Sprintf(
-		"%s requires a scaling script",
+		"%s requires a scaling_script",
 		e.Group.Name,
 	)
 }
@@ -53,7 +53,7 @@ type InvalidScalingServer struct {
 
 func (e InvalidScalingServer) Error() string {
 	return fmt.Sprintf(
-		"%s contains invlid scaling server %s",
+		"%s contains invalid scaling server %s",
 		e.Group.Name,
 		e.Server,
 	)
@@ -109,4 +109,18 @@ type NoChangeRequired struct{}
 
 func (e NoChangeRequired) Error() string {
 	return "no scaling is necessary at this time"
+}
+
+type ScalingFailure struct {
+	Group     *Group
+	Direction Direction
+	Scaled    []*Server
+	Failed    []*Server
+}
+
+func (e ScalingFailure) Error() string {
+	return fmt.Sprintf(
+		"could not be scaled %s",
+		e.Direction.String(),
+	)
 }

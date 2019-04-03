@@ -68,31 +68,31 @@ func (steps *Group) stubEnvironment() {
 func (steps *Group) stubServer(id int, provisionedId string, state string) {
 	steps.api.AddResponse(
 		"get",
-		fmt.Sprintf("/servers?page=1&per_page=100&provisioned_id=%s", provisionedId),
+		fmt.Sprintf("servers?provisioned_id=%s", provisionedId),
 		steps.constructResponse(fmt.Sprintf(`{"servers" : [{"id" : %d, "provisioned_id" : "%s", "state" : "%s", "private_hostname": "server%d", "environment": "/1"}]}`, id, provisionedId, state, id), nil),
 	)
 
-	steps.api.AddResponse(
-		"get",
-		fmt.Sprintf("/servers?page=2&per_page=100&provisioned_id=%s", provisionedId),
-		steps.constructResponse(`{"servers" : []}`, nil),
-	)
+	//steps.api.AddResponse(
+	//"get",
+	//fmt.Sprintf("/servers?page=2&per_page=100&provisioned_id=%s", provisionedId),
+	//steps.constructResponse(`{"servers" : []}`, nil),
+	//)
 }
 
 func (steps *Group) unstubServer(id int, provisionedId string) {
 	steps.api.RemoveResponse(
 		"get",
-		fmt.Sprintf("/servers?page=1&per_page=100&provisioned_id=%s", provisionedId),
+		fmt.Sprintf("servers?provisioned_id=%s", provisionedId),
 	)
 
-	steps.api.RemoveResponse(
-		"get",
-		fmt.Sprintf("/servers?page=2&per_page=100&provisioned_id=%s", provisionedId),
-	)
+	//steps.api.RemoveResponse(
+	//"get",
+	//fmt.Sprintf("/servers?page=2&per_page=100&provisioned_id=%s", provisionedId),
+	//)
 
 	steps.api.AddResponse(
 		"get",
-		fmt.Sprintf("/servers?page=1&per_page=100&provisioned_id=%s", provisionedId),
+		fmt.Sprintf("servers?provisioned_id=%s", provisionedId),
 		steps.constructResponse(`{"servers" : []}`, nil),
 	)
 }
@@ -106,7 +106,7 @@ func (steps *Group) constructResponse(data string, err error) eygo.Response {
 
 func (steps *Group) stubStart(id int, provisionedId string, success bool) {
 	method := "put"
-	path := fmt.Sprintf("/servers/%d/start", id)
+	path := fmt.Sprintf("servers/%d/start", id)
 	response := fmt.Sprintf(`{"request" : {"type" : "start_server", "id" : "%s", "finished_at" : "2018-05-14T00:00:00+00:00", "successful" : %t}}`, provisionedId, success)
 
 	steps.api.RemoveResponse(method, path)
@@ -115,7 +115,7 @@ func (steps *Group) stubStart(id int, provisionedId string, success bool) {
 
 func (steps *Group) stubStop(id int, provisionedId string, success bool) {
 	method := "put"
-	path := fmt.Sprintf("/servers/%d/stop", id)
+	path := fmt.Sprintf("servers/%d/stop", id)
 	response := fmt.Sprintf(`{"request" : {"type" : "stop_server", "id" : "%s", "finished_at" : "2018-05-14T00:00:00+00:00", "successful" : %t}}`, provisionedId, success)
 
 	steps.api.RemoveResponse(method, path)
