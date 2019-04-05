@@ -22,6 +22,7 @@ func Finalize(result dry.Result) error {
 func finalizeFailure(result dry.Result) error {
 	event := eventify(result.Error())
 	log := event.Services.Log
+	locker := event.Services.Locker
 	err := event.Error
 
 	// handle no-op
@@ -62,6 +63,11 @@ func finalizeFailure(result dry.Result) error {
 			group,
 			fmt.Sprintf("Could not be scaled %s - Errors occurred while %s these servers, please contact support: %s", direction, action, strings.Join(failures, ", ")),
 		)
+
+		lerr := locker.Unlock(group)
+		if lerr != nil {
+			logUnlockFailure(log, group)
+		}
 
 		return err
 	}
@@ -104,7 +110,31 @@ func insufficientCapacityDetected(err error) bool {
 }
 
 func finalizeSuccess(result dry.Result) error {
-	//event := eventify(result.Value())
+	event := eventify(result.Value())
+	log := event.Services.Log
+	locker := event.Services.Locker
+	group := event.Group
+
+	// unlock the group
+	err := locker.Unlock(group)
+	if err != nil {
+		logUnlockFailure(log, group)
+
+		return err
+	}
+
+	// log success
+	log.Success(
+		group,
+		fmt.Sprintf(
+			"Successfully scaled %s",
+			event.Direction.String(),
+		),
+	)
 
 	return nil
+}
+
+func logUnlockFailure(log LogService, group *Group) {
+	log.Failure(group, "Cannot unlock the group. Please contact support.")
 }

@@ -34,6 +34,14 @@ func (steps *Locking) StepUp(s kennel.Suite) {
 		return nil
 	})
 
+	s.Step(`^the group is unlocked$`, func() error {
+		if fs.FileExists(fs.Locks() + "/mygroup") {
+			return fmt.Errorf("There is a lockfile for the group")
+		}
+
+		return nil
+	})
+
 }
 
 func init() {
