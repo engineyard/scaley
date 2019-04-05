@@ -27,6 +27,7 @@ Feature: Custom Stop Script
     And it exits successfully
     And the group is unlocked
 
+    @failure
   Scenario: With a crashy custom stop script
     Given my group uses a custom stop script that fails for the first server
     When I run `scaley scale mygroup`
@@ -36,3 +37,11 @@ Feature: Custom Stop Script
     And it exits with an error
     And the group is unlocked
 
+  Scenario: Ingoring stop script errors
+    Given my group uses a custom stop script that fails for the first server
+    But my group is configured to ignore stop script errors
+    When I run `scaley scale mygroup`
+    Then the stop script is executed for each target server
+    And the group is scaled down
+    And it exits successfully
+    And the group is unlocked

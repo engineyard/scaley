@@ -172,6 +172,12 @@ func (steps *Group) StepUp(s kennel.Suite) {
 		return steps.writeGroup()
 	})
 
+	s.Step(`^my group is configured to ignore stop script errors$`, func() error {
+		steps.model.IgnoreStopScriptErrors = true
+
+		return steps.writeGroup()
+	})
+
 	s.Step(`^my group is configured to use the individual strategy$`, func() error {
 		steps.model = generateGroup("individual")
 
