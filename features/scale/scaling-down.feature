@@ -14,6 +14,7 @@ Feature: Scaling Down
     Given there is capacity for the group to downscale
     When I run `scaley scale mygroup`
     Then the group is scaled down
+    And the group is unlocked
 
   Scenario Outline: Scaling with insufficient capacity
     Given my group is configured to use the <Strategy> strategy
@@ -43,6 +44,7 @@ Feature: Scaling Down
     When I run `scaley scale mygroup`
     Then it exits with an error
     And a scaling failure is logged
+    But the group is unlocked
 
     Examples:
       | Strategy    |
@@ -57,6 +59,7 @@ Feature: Scaling Down
     When I run `scaley scale mygroup`
     Then it exits with an error
     And a scaling failure is logged
+    But the grou is unlocked
 
     Examples:
       | Strategy    |
@@ -71,6 +74,7 @@ Feature: Scaling Down
     When I run `scaley scale mygroup`
     Then it exits with an error
     And a chef failure is logged
+    And the group remains locked
 
     Examples:
       | Strategy    |
@@ -85,6 +89,7 @@ Feature: Scaling Down
     When I run `scaley scale mygroup`
     Then it exits with an error
     And a chef failure is logged
+    And the group remains locked
 
     Examples:
       | Strategy    |

@@ -13,6 +13,7 @@ Feature: Scaling Up
     Given there is capacity for the group to upscale
     When I run `scaley scale mygroup`
     Then the group is scaled up
+    And the group is unlocked
     And it exits successfully
 
   Scenario Outline: Scaling with insufficient capacity
@@ -44,6 +45,7 @@ Feature: Scaling Up
     When I run `scaley scale mygroup`
     Then it exits with an error
     And a scaling failure is logged
+    But the group is unlocked
 
     Examples:
       | Strategy    |
@@ -58,6 +60,7 @@ Feature: Scaling Up
     When I run `scaley scale mygroup`
     Then it exits with an error
     And a scaling failure is logged
+    But the group is unlocked
 
     Examples:
       | Strategy    |
@@ -72,6 +75,7 @@ Feature: Scaling Up
     When I run `scaley scale mygroup`
     Then it exits with an error
     And a chef failure is logged
+    And the group remains locked
 
     Examples:
       | Strategy    |
@@ -86,6 +90,7 @@ Feature: Scaling Up
     When I run `scaley scale mygroup`
     Then it exits with an error
     And a chef failure is logged
+    And the group remains locked
 
     Examples:
       | Strategy    |
