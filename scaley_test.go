@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/engineyard/scaley/features/steps"
+	"github.com/engineyard/scaley/internal/steps"
 
 	"github.com/DATA-DOG/godog"
 	"github.com/engineyard/scaley/cmd/scaley/cmd"
