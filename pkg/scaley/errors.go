@@ -79,7 +79,7 @@ type NoViableCandidates struct {
 func (e NoViableCandidates) Error() string {
 	return fmt.Sprintf(
 		"%s has no viable candidates to scale %s",
-		e.Group,
+		e.Group.Name,
 		e.Direction,
 	)
 }
