@@ -59,7 +59,7 @@ Feature: Scaling Down
     When I run `scaley scale mygroup`
     Then it exits with an error
     And a scaling failure is logged
-    But the grou is unlocked
+    But the group is unlocked
 
     Examples:
       | Strategy    |
