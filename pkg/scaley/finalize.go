@@ -54,14 +54,14 @@ func finalizeFailure(result dry.Result) error {
 			action = "stopping"
 		}
 
-		failures := make([]string, 0)
-		for _, f := range event.Failed {
-			failures = append(failures, f.ProvisionedID)
-		}
-
 		log.Failure(
 			group,
-			fmt.Sprintf("Could not be scaled %s - Errors occurred while %s these servers, please contact support: %s", direction, action, strings.Join(failures, ", ")),
+			fmt.Sprintf(
+				"Could not be scaled %s - Errors occurred while %s servers, please contact support. %s",
+				direction,
+				action,
+				failureDetails(event.Scaled, event.Failed),
+			),
 		)
 
 		lerr := locker.Unlock(group)
@@ -76,7 +76,12 @@ func finalizeFailure(result dry.Result) error {
 	if chefFailureDetected(err) {
 		log.Failure(
 			group,
-			fmt.Sprintf("Could not be scaled %s - A Chef error occurred while %sscaling the group. Please contact support.", direction, direction),
+			fmt.Sprintf(
+				"Could not be scaled %s - A Chef error occurred while %sscaling the group. Please contact support. %s",
+				direction,
+				direction,
+				failureDetails(event.Scaled, event.Failed),
+			),
 		)
 	}
 
@@ -124,11 +129,18 @@ func finalizeSuccess(result dry.Result) error {
 	}
 
 	// log success
+	scaled := make([]string, 0)
+
+	for _, server := range event.Scaled {
+		scaled = append(scaled, server.ProvisionedID)
+	}
+
 	log.Success(
 		group,
 		fmt.Sprintf(
-			"Successfully scaled %s",
+			"Successfully scaled %s. Servers affected: %s",
 			event.Direction.String(),
+			strings.Join(scaled, ", "),
 		),
 	)
 
@@ -138,3 +150,47 @@ func finalizeSuccess(result dry.Result) error {
 func logUnlockFailure(log LogService, group *Group) {
 	log.Failure(group, "Cannot unlock the group. Please contact support.")
 }
+
+func failureDetails(scaled []*Server, failed []*Server) string {
+	failedIDs := make([]string, 0)
+	for _, f := range failed {
+		failedIDs = append(failedIDs, f.ProvisionedID)
+	}
+
+	scaledIDs := make([]string, 0)
+	for _, s := range scaled {
+		scaledIDs = append(scaledIDs, s.ProvisionedID)
+	}
+
+	parts := make([]string, 0)
+
+	if len(failedIDs) > 0 {
+		parts = append(
+			parts,
+			"(Failed to start/stop: "+strings.Join(failedIDs, ", ")+")",
+		)
+	}
+
+	if len(scaledIDs) > 0 {
+		parts = append(
+			parts,
+			"(Successfully started/stopped: "+strings.Join(scaledIDs, ", ")+")",
+		)
+	}
+
+	return strings.Join(parts, " ")
+}
+
+// Copyright © 2019 Engine Yard, Inc.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
