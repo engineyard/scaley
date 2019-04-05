@@ -21,12 +21,16 @@ import (
 	"github.com/spf13/viper"
 )
 
+// RootCmd is the root command of the scaley executable.
 var RootCmd = &cobra.Command{
 	Use:   "scaley",
 	Short: "Generalized faux autoscaling for Engine Yard servers",
 	Long:  `Generalized faux autoscaling for Engine Yard servers`,
 }
 
+// Execute attempts to run the root command and returns an error. If root
+// returned cleanly, nothing is done and nil is returned. Otherwise, the
+// root error is printed to the terminal and is then returned.
 func Execute() error {
 	err := RootCmd.Execute()
 

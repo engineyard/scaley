@@ -53,6 +53,8 @@ type ScalingScriptService interface {
 	Exists(string) bool
 }
 
+// LogService is an interface that describes an object that provides logging
+// capabilities.
 type LogService interface {
 	Info(*Group, string)
 	Failure(*Group, string)

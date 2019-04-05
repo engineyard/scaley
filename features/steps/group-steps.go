@@ -213,7 +213,7 @@ func (steps *Group) StepUp(s kennel.Suite) {
 	})
 
 	s.Step(`^the API is erroring on server start requests$`, func() error {
-		for i, _ := range steps.model.ScalingServers {
+		for i := range steps.model.ScalingServers {
 			method := "put"
 			path := fmt.Sprintf("servers/%d/start", i)
 			steps.api.RemoveResponse(method, path)
@@ -223,7 +223,7 @@ func (steps *Group) StepUp(s kennel.Suite) {
 	})
 
 	s.Step(`^the API is erroring on server stop requests$`, func() error {
-		for i, _ := range steps.model.ScalingServers {
+		for i := range steps.model.ScalingServers {
 			method := "put"
 			path := fmt.Sprintf("servers/%d/stop", i)
 			steps.api.RemoveResponse(method, path)

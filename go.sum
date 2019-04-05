@@ -7,16 +7,9 @@ github.com/coreos/go-semver v0.2.0/go.mod h1:nnelYz7RCh+5ahJtPPxZlU+153eP4D4r3Ee
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/ess/dry v1.0.0 h1:vL2Cw5DGpI9+Ph/Yc/9bvgIIfYUkVYf448Uk7OfiHUE=
 github.com/ess/dry v1.0.0/go.mod h1:ONBO4CYuC1L0q8c1pnDJtQwF9H3ZZxKmJtVBVkrU8h0=
-github.com/ess/eygo v0.2.1 h1:JELOLxZFALsZpZp1Shmmq0qYSyhIBssic8yMKjA5LIg=
-github.com/ess/eygo v0.2.1/go.mod h1:KIXvzJN5zojXnpBBS4eOetjIXIIXUFuI9BPWPZZvzS8=
-github.com/ess/eygo v0.3.0 h1:/kOYQzdKse2EMPaF+W/htdQwTi6RePwePI/4Vkwbrr0=
-github.com/ess/eygo v0.3.0/go.mod h1:mZcibSJ62+pL8CKVfv6aQTlrY5WJwmbcPMiVwvOkK0s=
 github.com/ess/eygo v0.3.1 h1:u2eGIfm+V6VB7fifMGe/6C+jDVz9Uqs9hFM9c66joOU=
 github.com/ess/eygo v0.3.1/go.mod h1:mZcibSJ62+pL8CKVfv6aQTlrY5WJwmbcPMiVwvOkK0s=
-github.com/ess/fakey v0.0.0-20180221045558-31e52d811bda h1:qMlC85wfs5WDGfromuNWcJlvVbOXoNxQblyHd/2n4zA=
 github.com/ess/fakey v0.0.0-20180221045558-31e52d811bda/go.mod h1:dPACLlOHkNgjuj2raallNKNmn5Sx+coz6UIMJirNmxA=
-github.com/ess/jamaica v1.0.2 h1:GOGH6t0eW3GsYih3mexAeN6OgDtz3wHTLtXzrpgepM4=
-github.com/ess/jamaica v1.0.2/go.mod h1:7FXZfv7Rp8EDwCrjZx+BahXozz5EUklcBEGy5ucbxRY=
 github.com/ess/jamaica v1.0.3 h1:R3XizHAqM+JLWsoJvQ/OTIHpzfadsZGEO/bbfuovbXI=
 github.com/ess/jamaica v1.0.3/go.mod h1:7FXZfv7Rp8EDwCrjZx+BahXozz5EUklcBEGy5ucbxRY=
 github.com/ess/kennel v0.0.4 h1:hiWVATvsnCREmKS14/wt5ya5M9nq9+ehoRtBHXd62FQ=

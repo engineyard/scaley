@@ -4,6 +4,8 @@ import (
 	"fmt"
 )
 
+// CannotLoadGroup is an error that is raised when the group data cannot be
+// read from its data source.
 type CannotLoadGroup struct {
 	GroupName string
 	Err       error
@@ -13,6 +15,8 @@ func (e CannotLoadGroup) Error() string {
 	return fmt.Sprintf("%s could not be loaded: %s", e.GroupName, e.Err.Error())
 }
 
+// UnspecifiedScalingScript is an error that is raised when a group does not
+// have a scaling script configured.
 type UnspecifiedScalingScript struct {
 	Group *Group
 }
@@ -24,6 +28,8 @@ func (e UnspecifiedScalingScript) Error() string {
 	)
 }
 
+// MissingScalingScript is an error that is raised when a group's configured
+// scaling script does not actually exist.
 type MissingScalingScript struct {
 	Group *Group
 }
@@ -35,6 +41,8 @@ func (e MissingScalingScript) Error() string {
 	)
 }
 
+// UnspecifiedScalingServers is an error that is raised when a group has no
+// scaling servers configured.
 type UnspecifiedScalingServers struct {
 	Group *Group
 }
@@ -46,6 +54,8 @@ func (e UnspecifiedScalingServers) Error() string {
 	)
 }
 
+// InvalidScalingServer is an error that is raised when a group contains a
+// scaling server that cannot be found on the upstream Engine Yard API.
 type InvalidScalingServer struct {
 	Group  *Group
 	Server string
@@ -59,6 +69,8 @@ func (e InvalidScalingServer) Error() string {
 	)
 }
 
+// NoViableCandidates is an error that is raised when there are no servers in
+// the desired state for the associated scaling event.
 type NoViableCandidates struct {
 	Group     *Group
 	Direction Direction
@@ -72,6 +84,8 @@ func (e NoViableCandidates) Error() string {
 	)
 }
 
+// GroupIsLocked is an error that is raised when the group associated with a
+// scaling event is already locked for scaling operations.
 type GroupIsLocked struct {
 	Group *Group
 }
@@ -83,6 +97,7 @@ func (e GroupIsLocked) Error() string {
 	)
 }
 
+// LockFailure is an error that is raised when an attempt to lock a group fails.
 type LockFailure struct {
 	Group *Group
 }
@@ -94,6 +109,8 @@ func (e LockFailure) Error() string {
 	)
 }
 
+// UnlockFailure is an error that is raised when an attempt to unlock a group
+// fails.
 type UnlockFailure struct {
 	Group *Group
 }
@@ -105,12 +122,16 @@ func (e UnlockFailure) Error() string {
 	)
 }
 
+// NoChangeRequired is an error that is raised when the scaling script for a
+// scaling script's group indicates that the group should not be scaled.
 type NoChangeRequired struct{}
 
 func (e NoChangeRequired) Error() string {
 	return "no scaling is necessary at this time"
 }
 
+// ScalingFailure is an error that is raised when an attempt to scale a group's
+// scaling servers up or down fails.
 type ScalingFailure struct {
 	Group     *Group
 	Direction Direction
@@ -125,6 +146,8 @@ func (e ScalingFailure) Error() string {
 	)
 }
 
+// InvalidEnvironment is an error that is raised when the environment associated
+// with a scaling script's group cannot be loaded from the Engine Yard API.
 type InvalidEnvironment struct {
 	Group *Group
 }
@@ -136,6 +159,8 @@ func (e InvalidEnvironment) Error() string {
 	)
 }
 
+// ChefFailure is an error that is raised when an attempt to reconfigure an
+// environment fails.
 type ChefFailure struct {
 	Group       *Group
 	Environment *Environment

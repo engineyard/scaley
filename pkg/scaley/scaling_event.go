@@ -4,6 +4,8 @@ import (
 	"github.com/ess/dry"
 )
 
+// ScalingEvent is a collection of data that acts as both input and output to
+// a Scale transaction.
 type ScalingEvent struct {
 	GroupName   string
 	Services    *Services

@@ -9,16 +9,23 @@ import (
 	"github.com/engineyard/scaley/pkg/scaley"
 )
 
+// EnvironmentService is a service that knows how to interact with Engine Yard
+// Cloud environments via the EY Core API.
 type EnvironmentService struct {
 	upstream *eygo.EnvironmentService
 }
 
+// NewEnvironmentService returns a new instance of EnvironmentService.
 func NewEnvironmentService() *EnvironmentService {
 	return &EnvironmentService{
 		eygo.NewEnvironmentService(Driver),
 	}
 }
 
+// Get takes an environment ID as a string and returns the associated
+// environment and an error. If there are issues along the way, the error is
+// populated and the environment is nil. Otherwise, the environment is populated
+// and the error is nil.
 func (service *EnvironmentService) Get(id string) (*scaley.Environment, error) {
 
 	params := eygo.Params{}
@@ -44,6 +51,9 @@ func (service *EnvironmentService) Get(id string) (*scaley.Environment, error) {
 	return environment, nil
 }
 
+// Configure takes an environment and attempts to reconfigure it. If there are
+// issues on the upstream API or Chef service, an error is returned. Otherwise,
+// nil is returned.
 func (service *EnvironmentService) Configure(env *scaley.Environment) error {
 	req, err := rawPost(fmt.Sprintf("environments/%s/apply", env.ID))
 	if err != nil {

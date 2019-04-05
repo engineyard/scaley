@@ -7,6 +7,10 @@ import (
 	"github.com/ess/dry"
 )
 
+// Finalize is the last step of all scaley runs. It takes a dry.Result with an
+// embedded scaling event and handles things like cleanup, logging of
+// event completion, and so on. If the scaling event failed, an error is
+// returned. Otherwise, nil is returned.
 func Finalize(result dry.Result) error {
 	if result.Failure() {
 		return finalizeFailure(result)

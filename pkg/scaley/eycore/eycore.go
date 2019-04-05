@@ -8,8 +8,12 @@ import (
 	"github.com/ess/eygo/http"
 )
 
+// Driver is an eygo.Driver instance that is used for all API operations within
+// the package.
 var Driver eygo.Driver
 
+// Setup takes a url and an authentication token and sets up the package's
+// Driver to interact with the EY Core API at that url with the given token.
 func Setup(baseURL string, token string) {
 	if Driver == nil {
 		Driver, _ = http.NewDriver(baseURL, token)
