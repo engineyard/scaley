@@ -20,16 +20,41 @@ func serverReq(path string) (*eygo.Request, error) {
 	response := Driver.Put(path, nil, nil)
 	if response.Okay() {
 		data := response.Pages[0]
-		req := &eygo.Request{}
-		err := json.Unmarshal(data, req)
+
+		wrapper := struct {
+			Request *eygo.Request `json:"request"`
+		}{}
+
+		err := json.Unmarshal(data, &wrapper)
 		if err != nil {
 			return nil, err
 		}
 
-		return req, nil
+		return wrapper.Request, nil
 	}
 
 	return nil, response.Error
+}
+
+func rawPost(path string) (*eygo.Request, error) {
+	response := Driver.Post(path, nil, nil)
+	if response.Okay() {
+		data := response.Pages[0]
+
+		wrapper := struct {
+			Request *eygo.Request `json:"request"`
+		}{}
+
+		err := json.Unmarshal(data, &wrapper)
+		if err != nil {
+			return nil, err
+		}
+
+		return wrapper.Request, nil
+	}
+
+	return nil, response.Error
+
 }
 
 func waitFor(req *eygo.Request) (*eygo.Request, error) {

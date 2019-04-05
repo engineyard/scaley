@@ -4,11 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/ess/eygo"
 	"github.com/ess/jamaica"
 	"github.com/ess/kennel"
-
-	"github.com/engineyard/scaley/pkg/scaley/eycore"
 )
 
 type OutputSteps struct{}
@@ -28,8 +25,6 @@ func (steps *OutputSteps) StepUp(s kennel.Suite) {
 		output := fmt.Sprintf("%s", jamaica.LastCommandStatus())
 
 		if !strings.Contains(output, "mygroup scaling_script does not exist on the file system") {
-			fmt.Println("output:", output)
-
 			return fmt.Errorf("Didn't see a scaling script error")
 		}
 
@@ -49,12 +44,19 @@ func (steps *OutputSteps) StepUp(s kennel.Suite) {
 	s.Step(`^I see an error about the invalid scaling server$`, func() error {
 		output := fmt.Sprintf("%s", jamaica.LastCommandStatus())
 
-		d := eycore.Driver.(*eygo.MockDriver)
-		fmt.Println("requests:", d.Requests("get"))
-
 		if !strings.Contains(output, "mygroup contains invalid scaling server") {
 			return fmt.Errorf("Didn't see a scaling server error")
 		}
+
+		return nil
+	})
+
+	s.Step(`^the tests print the output$`, func() error {
+		fmt.Printf(
+			"output: %s\nerror: %s\n",
+			jamaica.LastCommandStdout(),
+			jamaica.LastCommandStatus(),
+		)
 
 		return nil
 	})

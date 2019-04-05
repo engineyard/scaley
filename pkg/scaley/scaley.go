@@ -16,6 +16,7 @@ type Server struct {
 	ID            int
 	ProvisionedID string
 	State         string
+	Hostname      string
 	EnvironmentID string
 }
 

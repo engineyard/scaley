@@ -14,9 +14,10 @@ func Scale() *dry.Transaction {
 		validateGroup,
 		lockGroup,
 		loadServers,
+		loadEnvironment,
 		calculateDirection,
-		announceScalingStart,
 		calculateCandidates,
+		announceScalingStart,
 		scaleCandidates,
 		configureEnvironment,
 	)
@@ -111,6 +112,22 @@ func loadServers(input dry.Value) dry.Result {
 	return dry.Success(event)
 }
 
+func loadEnvironment(input dry.Value) dry.Result {
+	event := eventify(input)
+	server := event.Servers[0]
+
+	environment, err := event.Services.Environments.Get(server.EnvironmentID)
+	if err != nil {
+		event.Error = InvalidEnvironment{event.Group}
+
+		return dry.Failure(event)
+	}
+
+	event.Environment = environment
+
+	return dry.Success(event)
+}
+
 func calculateDirection(input dry.Value) dry.Result {
 	event := eventify(input)
 	script := event.Group.ScalingScript
@@ -162,7 +179,7 @@ func scaleCandidates(input dry.Value) dry.Result {
 	event := eventify(input)
 	toScale := make([]*Server, 0)
 
-	var method func(*Server) error
+	var method func(*Server, *ScalingEvent) error
 
 	switch event.Strategy {
 	case Individual:
@@ -173,13 +190,13 @@ func scaleCandidates(input dry.Value) dry.Result {
 
 	switch event.Direction {
 	case Up:
-		method = event.Services.Servers.Start
+		method = scaleCandidateUp
 	default:
-		method = event.Services.Servers.Stop
+		method = scaleCandidateDown
 	}
 
 	for _, server := range toScale {
-		err := method(server)
+		err := method(server, event)
 		if err != nil {
 			event.Failed = append(event.Failed, server)
 		} else {
@@ -201,8 +218,36 @@ func scaleCandidates(input dry.Value) dry.Result {
 	return dry.Success(event)
 }
 
+func scaleCandidateUp(candidate *Server, event *ScalingEvent) error {
+	return event.Services.Servers.Start(candidate)
+}
+
+func scaleCandidateDown(candidate *Server, event *ScalingEvent) error {
+	stopscript := event.Group.StopScript
+
+	if len(stopscript) > 0 {
+		command := fmt.Sprintf("%s %s", stopscript, candidate.Hostname)
+
+		if event.Services.Runner.Run(command) != 0 {
+			return fmt.Errorf("stop script failure")
+		}
+	}
+
+	return event.Services.Servers.Stop(candidate)
+}
+
 func configureEnvironment(input dry.Value) dry.Result {
 	event := eventify(input)
 
-	return dry.Failure(event)
+	err := event.Services.Environments.Configure(event.Environment)
+	if err != nil {
+		event.Error = ChefFailure{
+			event.Group,
+			event.Environment,
+		}
+
+		return dry.Failure(event)
+	}
+
+	return dry.Success(event)
 }

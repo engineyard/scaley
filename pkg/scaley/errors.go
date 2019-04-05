@@ -124,3 +124,27 @@ func (e ScalingFailure) Error() string {
 		e.Direction.String(),
 	)
 }
+
+type InvalidEnvironment struct {
+	Group *Group
+}
+
+func (e InvalidEnvironment) Error() string {
+	return fmt.Sprintf(
+		"could not load environment for %s",
+		e.Group.Name,
+	)
+}
+
+type ChefFailure struct {
+	Group       *Group
+	Environment *Environment
+}
+
+func (e ChefFailure) Error() string {
+	return fmt.Sprintf(
+		"could not configure %s for group %s",
+		e.Environment.Name,
+		e.Group.Name,
+	)
+}

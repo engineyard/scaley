@@ -54,15 +54,15 @@ func (steps *Group) scriptBase() string {
 func (steps *Group) stubEnvironment() {
 	steps.api.AddResponse(
 		"get",
-		"/environments?id=1&page=1&per_page=100",
+		"environments?id=1",
 		steps.constructResponse(`{"environments": [{"id" : 1}]}`, nil),
 	)
 
-	steps.api.AddResponse(
-		"get",
-		"/environments&?id=1&page=2&per_page=100",
-		steps.constructResponse(`{"environments": []}`, nil),
-	)
+	//steps.api.AddResponse(
+	//"get",
+	//"/environments&?id=1&page=2&per_page=100",
+	//steps.constructResponse(`{"environments": []}`, nil),
+	//)
 }
 
 func (steps *Group) stubServer(id int, provisionedId string, state string) {
@@ -124,7 +124,7 @@ func (steps *Group) stubStop(id int, provisionedId string, success bool) {
 
 func (steps *Group) stubChef(success bool) {
 	method := "post"
-	path := "/environments/1/apply"
+	path := "environments/1/apply"
 	response := fmt.Sprintf(`{"request" : {"type" : "configure_environment", "id" : "lolchefrun", "finished_at" : "finished", "successful" : %t}}`, success)
 
 	steps.api.RemoveResponse(method, path)
@@ -136,7 +136,7 @@ func (steps *Group) serversStarted() []string {
 
 	for _, id := range []string{"0", "1"} {
 		for _, path := range steps.api.Requests("put") {
-			if path == "/servers/"+id+"/start" {
+			if path == "servers/"+id+"/start" {
 				found = append(found, id)
 			}
 		}
@@ -150,7 +150,7 @@ func (steps *Group) serversStopped() []string {
 
 	for _, id := range []string{"0", "1"} {
 		for _, path := range steps.api.Requests("put") {
-			if path == "/servers/"+id+"/stop" {
+			if path == "servers/"+id+"/stop" {
 				found = append(found, id)
 			}
 		}
@@ -215,7 +215,7 @@ func (steps *Group) StepUp(s kennel.Suite) {
 	s.Step(`^the API is erroring on server start requests$`, func() error {
 		for i, _ := range steps.model.ScalingServers {
 			method := "put"
-			path := fmt.Sprintf("/servers/%d/start", i)
+			path := fmt.Sprintf("servers/%d/start", i)
 			steps.api.RemoveResponse(method, path)
 		}
 
@@ -225,7 +225,7 @@ func (steps *Group) StepUp(s kennel.Suite) {
 	s.Step(`^the API is erroring on server stop requests$`, func() error {
 		for i, _ := range steps.model.ScalingServers {
 			method := "put"
-			path := fmt.Sprintf("/servers/%d/stop", i)
+			path := fmt.Sprintf("servers/%d/stop", i)
 			steps.api.RemoveResponse(method, path)
 		}
 
@@ -249,7 +249,7 @@ func (steps *Group) StepUp(s kennel.Suite) {
 	})
 
 	s.Step(`^the API is erroring on environment configuration requests$`, func() error {
-		steps.api.RemoveResponse("post", "/environments/1/apply")
+		steps.api.RemoveResponse("post", "environments/1/apply")
 
 		return nil
 	})
@@ -362,7 +362,7 @@ func (steps *Group) StepUp(s kennel.Suite) {
 
 		for _, id := range []string{"0", "1"} {
 			for _, path := range steps.api.Requests("put") {
-				if path == "/servers/"+id+"/start" {
+				if path == "servers/"+id+"/start" {
 					found += 1
 				}
 			}

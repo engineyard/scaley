@@ -40,6 +40,7 @@ func (service *ServerService) Get(provisionedID string) (*scaley.Server, error) 
 		ID:            s.ID,
 		ProvisionedID: s.ProvisionedID,
 		State:         s.State,
+		Hostname:      s.PrivateHostname,
 		EnvironmentID: envParts[len(envParts)-1],
 	}
 
@@ -48,7 +49,7 @@ func (service *ServerService) Get(provisionedID string) (*scaley.Server, error) 
 
 func (service *ServerService) Start(server *scaley.Server) error {
 
-	req, err := serverReq(fmt.Sprintf("/servers/%d/start", server.ID))
+	req, err := serverReq(fmt.Sprintf("servers/%d/start", server.ID))
 	if err != nil {
 		return err
 	}
@@ -66,5 +67,19 @@ func (service *ServerService) Start(server *scaley.Server) error {
 }
 
 func (service *ServerService) Stop(server *scaley.Server) error {
-	return fmt.Errorf("Unimplemented")
+	req, err := serverReq(fmt.Sprintf("servers/%d/stop", server.ID))
+	if err != nil {
+		return err
+	}
+
+	req, err = waitFor(req)
+	if err != nil {
+		return err
+	}
+
+	if !req.Successful {
+		return fmt.Errorf("%s", req.RequestStatus)
+	}
+
+	return nil
 }

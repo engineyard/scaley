@@ -2,6 +2,7 @@ package eycore
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/ess/eygo"
 
@@ -19,9 +20,44 @@ func NewEnvironmentService() *EnvironmentService {
 }
 
 func (service *EnvironmentService) Get(id string) (*scaley.Environment, error) {
-	return nil, fmt.Errorf("Unimplemented")
+
+	params := eygo.Params{}
+	params.Set("id", id)
+
+	collection := service.upstream.All(params)
+
+	if len(collection) > 1 {
+		return nil, fmt.Errorf("more than one environment with id %s found", id)
+	}
+
+	if len(collection) == 0 {
+		return nil, fmt.Errorf("no environment with id %s found", id)
+	}
+
+	e := collection[0]
+
+	environment := &scaley.Environment{
+		ID:   strconv.Itoa(e.ID),
+		Name: e.Name,
+	}
+
+	return environment, nil
 }
 
 func (service *EnvironmentService) Configure(env *scaley.Environment) error {
-	return fmt.Errorf("Unimplemented")
+	req, err := rawPost(fmt.Sprintf("environments/%s/apply", env.ID))
+	if err != nil {
+		return err
+	}
+
+	req, err = waitFor(req)
+	if err != nil {
+		return err
+	}
+
+	if !req.Successful {
+		return fmt.Errorf("%s", req.RequestStatus)
+	}
+
+	return nil
 }
