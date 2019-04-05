@@ -5,10 +5,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/engineyard/scaley/features/steps"
+	"github.com/engineyard/scaley/internal/steps"
 
 	"github.com/DATA-DOG/godog"
-	"github.com/engineyard/scaley/cmd/scaley/cmd"
+	"github.com/engineyard/scaley/cmd/scaley/commands"
 	"github.com/ess/jamaica"
 	"github.com/ess/kennel"
 	"github.com/ess/mockable"
@@ -24,7 +24,7 @@ func TestMain(m *testing.M) {
 			"godog",
 			func(s *godog.Suite) {
 				mockable.Enable()
-				jamaica.SetRootCmd(cmd.RootCmd)
+				jamaica.SetRootCmd(commands.RootCmd)
 				jamaica.StepUp(s)
 				steps.Register()
 				kennel.StepUp(s)

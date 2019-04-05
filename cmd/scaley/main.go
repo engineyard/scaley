@@ -17,11 +17,11 @@ package main
 import (
 	"os"
 
-	"github.com/engineyard/scaley/cmd/scaley/cmd"
+	"github.com/engineyard/scaley/cmd/scaley/commands"
 )
 
 func main() {
-	if cmd.Execute() != nil {
+	if commands.Execute() != nil {
 		os.Exit(1)
 	}
 }
