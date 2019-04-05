@@ -16,11 +16,11 @@ func (steps *LogSteps) StepUp(s kennel.Suite) {
 		found := 0
 		output := jamaica.LastCommandStdout()
 
-		if strings.Contains(output, "FAILURE : Group[mygroup]: Could not be scaled up - Errors occurred while starting these servers, please contact support: ") {
+		if strings.Contains(output, "FAILURE : Group[mygroup]: Could not be scaled up - Errors occurred while starting servers, please contact support. ") {
 			found += 1
 		}
 
-		if strings.Contains(output, "FAILURE : Group[mygroup]: Could not be scaled down - Errors occurred while stopping these servers, please contact support: ") {
+		if strings.Contains(output, "FAILURE : Group[mygroup]: Could not be scaled down - Errors occurred while stopping servers, please contact support. ") {
 			found += 1
 		}
 
