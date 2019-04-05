@@ -228,8 +228,12 @@ func scaleCandidateDown(candidate *Server, event *ScalingEvent) error {
 	if len(stopscript) > 0 {
 		command := fmt.Sprintf("%s %s", stopscript, candidate.Hostname)
 
-		if event.Services.Runner.Run(command) != 0 {
-			return fmt.Errorf("stop script failure")
+		ssr := event.Services.Runner.Run(command)
+
+		if !event.Group.IgnoreStopScriptErrors {
+			if ssr != 0 {
+				return fmt.Errorf("stop script failure")
+			}
 		}
 	}
 
