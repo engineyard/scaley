@@ -3,6 +3,7 @@ package scaley
 import (
 	"fmt"
 
+	"github.com/ess/debuggable"
 	"github.com/ess/dry"
 )
 
@@ -198,6 +199,9 @@ func scaleCandidates(input dry.Value) dry.Result {
 	for _, server := range toScale {
 		err := method(server, event)
 		if err != nil {
+			if debuggable.Enabled() {
+				fmt.Println("[scaley debug] server state change error:", err)
+			}
 			event.Failed = append(event.Failed, server)
 		} else {
 			event.Scaled = append(event.Scaled, server)

@@ -2,8 +2,10 @@ package eycore
 
 import (
 	"encoding/json"
+	"fmt"
 	"time"
 
+	"github.com/ess/debuggable"
 	"github.com/ess/eygo"
 	"github.com/ess/eygo/http"
 )
@@ -16,7 +18,12 @@ var Driver eygo.Driver
 // Driver to interact with the EY Core API at that url with the given token.
 func Setup(baseURL string, token string) {
 	if Driver == nil {
-		Driver, _ = http.NewDriver(baseURL, token)
+		d, err := http.NewDriver(baseURL, token)
+		if err != nil {
+			panic("Couldn't set up the API driver: " + err.Error())
+		}
+
+		Driver = d
 	}
 }
 
@@ -31,6 +38,9 @@ func serverReq(path string) (*eygo.Request, error) {
 
 		err := json.Unmarshal(data, &wrapper)
 		if err != nil {
+			if debuggable.Enabled() {
+				fmt.Println("[scaley debug] Couldn't unmarshal the request:", err)
+			}
 			return nil, err
 		}
 
@@ -51,6 +61,10 @@ func rawPost(path string) (*eygo.Request, error) {
 
 		err := json.Unmarshal(data, &wrapper)
 		if err != nil {
+			if debuggable.Enabled() {
+				fmt.Println("[scaley debug] Couldn't unmarshal the POST request:", err)
+			}
+
 			return nil, err
 		}
 

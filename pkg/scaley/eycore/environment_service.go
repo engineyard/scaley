@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/ess/debuggable"
 	"github.com/ess/eygo"
 
 	"github.com/engineyard/scaley/pkg/scaley"
@@ -62,6 +63,9 @@ func (service *EnvironmentService) Configure(env *scaley.Environment) error {
 
 	req, err = waitFor(req)
 	if err != nil {
+		if debuggable.Enabled() {
+			fmt.Println("[scaley debug] waitFor returned an error:", err)
+		}
 		return err
 	}
 

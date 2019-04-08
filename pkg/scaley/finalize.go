@@ -24,14 +24,20 @@ func finalizeFailure(result dry.Result) error {
 	log := event.Services.Log
 	locker := event.Services.Locker
 	err := event.Error
+	group := event.Group
 
 	// handle no-op
 	if noOpDetected(err) {
-		// do nothing, and return no error
+		// unlock the group
+		lerr := locker.Unlock(group)
+		if lerr != nil {
+			logUnlockFailure(log, group)
+		}
+
+		// return no error
 		return nil
 	}
 
-	group := event.Group
 	direction := strings.ToLower(event.Direction.String())
 
 	// handle insufficient capacity
