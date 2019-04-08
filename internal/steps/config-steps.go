@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/afero"
 	"github.com/spf13/viper"
 
-	"github.com/engineyard/scaley/pkg/scaley/fs"
+	"github.com/engineyard/scaley/v2/pkg/scaley/fs"
 )
 
 type Config struct{}

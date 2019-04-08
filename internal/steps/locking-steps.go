@@ -6,7 +6,7 @@ import (
 	"github.com/ess/kennel"
 	"github.com/spf13/afero"
 
-	"github.com/engineyard/scaley/pkg/scaley/fs"
+	"github.com/engineyard/scaley/v2/pkg/scaley/fs"
 )
 
 type Locking struct{}

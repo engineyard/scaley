@@ -1,4 +1,4 @@
-module github.com/engineyard/scaley
+module github.com/engineyard/scaley/v2
 
 go 1.12
 

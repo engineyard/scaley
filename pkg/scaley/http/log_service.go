@@ -3,7 +3,7 @@ package http
 import (
 	"fmt"
 
-	"github.com/engineyard/scaley/pkg/scaley"
+	"github.com/engineyard/scaley/v2/pkg/scaley"
 )
 
 // LogService is a service that provides a logging mechanism via the Engine

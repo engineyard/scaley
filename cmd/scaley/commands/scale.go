@@ -6,11 +6,11 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
-	"github.com/engineyard/scaley/pkg/scaley"
-	"github.com/engineyard/scaley/pkg/scaley/bash"
-	"github.com/engineyard/scaley/pkg/scaley/eycore"
-	"github.com/engineyard/scaley/pkg/scaley/fs"
-	"github.com/engineyard/scaley/pkg/scaley/http"
+	"github.com/engineyard/scaley/v2/pkg/scaley"
+	"github.com/engineyard/scaley/v2/pkg/scaley/bash"
+	"github.com/engineyard/scaley/v2/pkg/scaley/eycore"
+	"github.com/engineyard/scaley/v2/pkg/scaley/fs"
+	"github.com/engineyard/scaley/v2/pkg/scaley/http"
 )
 
 var scaleCmd = &cobra.Command{

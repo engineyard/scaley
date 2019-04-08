@@ -6,7 +6,6 @@ import (
 
 	"github.com/ess/jamaica"
 	"github.com/ess/kennel"
-	//"github.com/engineyard/scaley/pkg/basher"
 )
 
 type DownScript struct{}

@@ -3,7 +3,7 @@ package fs
 import (
 	"fmt"
 
-	"github.com/engineyard/scaley/pkg/scaley"
+	"github.com/engineyard/scaley/v2/pkg/scaley"
 )
 
 // LockService is a service that knows how to lock and unlock groups via the

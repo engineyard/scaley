@@ -70,5 +70,6 @@ During each run, Scaley executes the Scaling Script associated with the Group an
 
 # History #
 
+* v2.0.0 - A maintainable redesign
 * v1.0.0 - First stable release
 * v0.1.0 - Initial release

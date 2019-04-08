@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/engineyard/scaley/cmd/scaley/commands"
+	"github.com/engineyard/scaley/v2/cmd/scaley/commands"
 )
 
 func main() {

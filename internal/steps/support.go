@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/engineyard/scaley/pkg/scaley"
-	"github.com/engineyard/scaley/pkg/scaley/bash"
+	"github.com/engineyard/scaley/v2/pkg/scaley"
+	"github.com/engineyard/scaley/v2/pkg/scaley/bash"
 )
 
 var mygroup *scaley.Group

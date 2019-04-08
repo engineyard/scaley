@@ -9,9 +9,9 @@ import (
 	"github.com/spf13/afero"
 	"gopkg.in/yaml.v2"
 
-	"github.com/engineyard/scaley/pkg/scaley"
-	"github.com/engineyard/scaley/pkg/scaley/eycore"
-	"github.com/engineyard/scaley/pkg/scaley/fs"
+	"github.com/engineyard/scaley/v2/pkg/scaley"
+	"github.com/engineyard/scaley/v2/pkg/scaley/eycore"
+	"github.com/engineyard/scaley/v2/pkg/scaley/fs"
 )
 
 type Group struct {
