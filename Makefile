@@ -6,7 +6,7 @@ BINARY=scaley
 # git commit -am "One more change after the tags"
 VERSION=`./scripts/genver`
 BUILD=`date +%FT%T%z`
-PACKAGE="github.com/engineyard/scaley/cmd/scaley"
+PACKAGE="github.com/engineyard/scaley/v2/cmd/scaley"
 TARGET="builds/${BINARY}-${VERSION}"
 PREFIX="${TARGET}/${BINARY}-${VERSION}"
 TESTFILES=`go list ./... | grep -v /vendor/`

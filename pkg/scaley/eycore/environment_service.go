@@ -7,7 +7,7 @@ import (
 	"github.com/ess/debuggable"
 	"github.com/ess/eygo"
 
-	"github.com/engineyard/scaley/pkg/scaley"
+	"github.com/engineyard/scaley/v2/pkg/scaley"
 )
 
 // EnvironmentService is a service that knows how to interact with Engine Yard

@@ -6,7 +6,7 @@ import (
 
 	"github.com/ess/eygo"
 
-	"github.com/engineyard/scaley/pkg/scaley"
+	"github.com/engineyard/scaley/v2/pkg/scaley"
 )
 
 // ServerService is a service that knows how to interact with servers via the

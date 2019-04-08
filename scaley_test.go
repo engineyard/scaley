@@ -5,10 +5,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/engineyard/scaley/internal/steps"
+	"github.com/engineyard/scaley/v2/internal/steps"
 
 	"github.com/DATA-DOG/godog"
-	"github.com/engineyard/scaley/cmd/scaley/commands"
+	"github.com/engineyard/scaley/v2/cmd/scaley/commands"
 	"github.com/ess/jamaica"
 	"github.com/ess/kennel"
 	"github.com/ess/mockable"

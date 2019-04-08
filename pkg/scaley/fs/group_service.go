@@ -5,7 +5,7 @@ import (
 
 	"gopkg.in/yaml.v2"
 
-	"github.com/engineyard/scaley/pkg/scaley"
+	"github.com/engineyard/scaley/v2/pkg/scaley"
 )
 
 // GroupService is a service that knows how to interact with groups on the
