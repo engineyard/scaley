@@ -1,14 +1,30 @@
-package main
+package http
 
 import (
-	"os"
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"net/http"
 
-	"github.com/engineyard/scaley/v2/cmd/scaley/commands"
+	"github.com/ess/mockable"
 )
 
-func main() {
-	if commands.Execute() != nil {
-		os.Exit(1)
+func notify(url string, level int, message string) {
+	payload := newPayload(level, message)
+
+	if mockable.Mocked() {
+		fmt.Println(payload)
+	} else {
+		if data, err := json.Marshal(payload); err == nil {
+			body := bytes.NewReader(data)
+
+			response, postErr := http.Post(url, "application/json", body)
+			if postErr != nil {
+				return
+			}
+
+			response.Body.Close()
+		}
 	}
 }
 

@@ -1,15 +1,18 @@
-package main
+package fs
 
-import (
-	"os"
+// ScalingScriptService is a service that knows how to interact with scaling
+// scripts via the file system.
+type ScalingScriptService struct{}
 
-	"github.com/engineyard/scaley/v2/cmd/scaley/commands"
-)
+// NewScalingScriptService returns a new ScalingScriptService.
+func NewScalingScriptService() *ScalingScriptService {
+	return &ScalingScriptService{}
+}
 
-func main() {
-	if commands.Execute() != nil {
-		os.Exit(1)
-	}
+// Exists takes a path and returns a boolean that expresses whether or not the
+// scaling script at that location exists.
+func (service *ScalingScriptService) Exists(path string) bool {
+	return FileExists(path)
 }
 
 // Copyright © 2019 Engine Yard, Inc.

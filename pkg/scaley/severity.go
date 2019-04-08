@@ -1,16 +1,16 @@
-package main
+package scaley
 
-import (
-	"os"
+// Severity describes the importance of a log message.
+type Severity int
 
-	"github.com/engineyard/scaley/v2/cmd/scaley/commands"
+const (
+	// Okay is used for success logs.
+	Okay Severity = iota
+	// Warning is used for information logs.
+	Warning
+	// Failure is used for failure logs.
+	Failure
 )
-
-func main() {
-	if commands.Execute() != nil {
-		os.Exit(1)
-	}
-}
 
 // Copyright © 2019 Engine Yard, Inc.
 //
