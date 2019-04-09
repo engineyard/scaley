@@ -49,6 +49,11 @@ func finalizeFailure(result dry.Result) error {
 			)
 		}
 
+		lerr := locker.Unlock(group)
+		if lerr != nil {
+			logUnlockFailure(log, group)
+		}
+
 		return nil
 	}
 
