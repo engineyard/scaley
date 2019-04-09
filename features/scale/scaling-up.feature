@@ -23,6 +23,7 @@ Feature: Scaling Up
     Then a warning is logged regarding the insufficient capacity
     And it exits successfully
     But no changes are made
+    And the group is unlocked
 
     Examples:
       | Strategy    |
