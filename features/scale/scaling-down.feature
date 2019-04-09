@@ -22,6 +22,7 @@ Feature: Scaling Down
     When I run `scaley scale mygroup`
     Then no changes are made
     And no messages are logged
+    And the group is unlocked
 
     Examples:
       | Strategy    |
