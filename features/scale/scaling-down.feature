@@ -35,7 +35,9 @@ Feature: Scaling Down
     And there is capacity for the group to downscale
     When I run `scaley scale mygroup`
     Then it exits with an error
-    And no changes are made
+    And a locking failure is logged
+    But no changes are made
+    And the group remains locked
 
     @failure
   Scenario Outline: Stop server yields an invalid API response

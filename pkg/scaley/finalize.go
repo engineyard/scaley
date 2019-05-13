@@ -38,6 +38,17 @@ func finalizeFailure(result dry.Result) error {
 		return nil
 	}
 
+	// handle a locked group
+	if groupLockDetected(err) {
+		log.Failure(
+			group,
+			"Cannot be scaled - Another scaley process has locked the group and may still be in-progress",
+		)
+
+		// pass the error on through
+		return err
+	}
+
 	direction := strings.ToLower(event.Direction.String())
 
 	// handle insufficient capacity
@@ -103,6 +114,12 @@ func finalizeFailure(result dry.Result) error {
 
 func noOpDetected(err error) bool {
 	_, c1 := err.(NoChangeRequired)
+
+	return c1
+}
+
+func groupLockDetected(err error) bool {
+	_, c1 := err.(GroupIsLocked)
 
 	return c1
 }
