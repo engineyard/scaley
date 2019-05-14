@@ -98,3 +98,20 @@ Feature: Scaling Down
       | Strategy    |
       | individual  |
       | legion      |
+
+    @failure
+  Scenario Outline: Chef run failure (locking_on_failure disabled)
+    Given my group is configured to use the <Strategy> strategy
+    And my group is configured to unlock on failures
+    And there is capacity for the group to downscale
+    But the environment cannot run chef successfully
+    When I run `scaley scale mygroup`
+    Then it exits with an error
+    And a chef failure is logged
+    But the group is unlocked
+
+    Examples:
+      | Strategy    |
+      | individual  |
+      | legion      |
+
