@@ -36,7 +36,9 @@ Feature: Scaling Up
     And there is capacity for the group to upscale
     When I run `scaley scale mygroup`
     Then it exits with an error
-    And no changes are made
+    And a locking failure is logged
+    But no changes are made
+    And the group remains locked
 
     @failure
   Scenario Outline: Start server yields an invalid API response
@@ -97,3 +99,20 @@ Feature: Scaling Up
       | Strategy    |
       | individual  |
       | legion      |
+
+    @failure
+  Scenario Outline: Chef run failure (locking_on_failure disabled)
+    Given my group is configured to use the <Strategy> strategy
+    And my group is configured to unlock on failures
+    And there is capacity for the group to upscale
+    But the environment cannot run chef successfully
+    When I run `scaley scale mygroup`
+    Then it exits with an error
+    And a chef failure is logged
+    But the group is unlocked
+
+    Examples:
+      | Strategy    |
+      | individual  |
+      | legion      |
+

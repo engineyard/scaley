@@ -50,6 +50,16 @@ func (steps *LogSteps) StepUp(s kennel.Suite) {
 		return nil
 	})
 
+	s.Step(`^a locking failure is logged$`, func() error {
+		output := jamaica.LastCommandStdout()
+
+		if strings.Contains(output, "FAILURE : Group[mygroup]: Cannot be scaled - Another scaley process has locked the group and may still be in-progress") {
+			return nil
+		}
+
+		return fmt.Errorf("Locking failure not found")
+	})
+
 	s.BeforeSuite(func() {
 		mockable.Enable()
 	})

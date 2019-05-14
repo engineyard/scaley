@@ -9,6 +9,7 @@ type Group struct {
 	ScalingScript          string   `yaml:"scaling_script"`
 	StopScript             string   `yaml:"stop_script"`
 	IgnoreStopScriptErrors bool     `yaml:"ignore_stop_script_errors"`
+	UnlockOnFailure        bool     `yaml:"unlock_on_failure"`
 	Strategy               string   `yaml:"strategy"`
 }
 
