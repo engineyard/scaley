@@ -68,8 +68,11 @@ During each run, Scaley executes the Scaling Script associated with the Group an
 * If a downscale is desired, attempt to scale the group down with the group's desired strategy (and optional stop script). Log any scaling errors as critical errors. Of particular note, unless the group is configured with `ignore_stop_script_errors: true`, a failure in the stop script execution will be considered a scaling failure.
 * If no change is desired, do not attempt to scale the group.
 
+After all applicable servers are started/stopped, Chef is run on the environment to ensure that all configurations are up to date. If this should fail, the group will remain locked and subsequent scaling attempts will fail due to this lock. If desirable, one can add `unlock_on_failure: true` to the group configuration to ensure that this lock is cleared regardless of Chef success.
+
 # History #
 
+* v2.0.2 - Optionally unlock on failure
 * v2.0.1 - Locks clear after InsufficientCapacity errors
 * v2.0.0 - A maintainable redesign
 * v1.0.0 - First stable release
