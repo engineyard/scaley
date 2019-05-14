@@ -105,6 +105,13 @@ func finalizeFailure(result dry.Result) error {
 				failureDetails(event.Scaled, event.Failed),
 			),
 		)
+
+		if group.UnlockOnFailure {
+			lerr := locker.Unlock(group)
+			if lerr != nil {
+				logUnlockFailure(log, group)
+			}
+		}
 	}
 
 	// pass all other errors upstream

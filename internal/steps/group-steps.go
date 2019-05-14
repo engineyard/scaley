@@ -178,6 +178,12 @@ func (steps *Group) StepUp(s kennel.Suite) {
 		return steps.writeGroup()
 	})
 
+	s.Step(`^my group is configured to unlock on failures$`, func() error {
+		steps.model.UnlockOnFailure = true
+
+		return steps.writeGroup()
+	})
+
 	s.Step(`^my group is configured to use the individual strategy$`, func() error {
 		steps.model = generateGroup("individual")
 
